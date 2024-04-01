@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <div class="card">
+        {{-- <div class="card">
             <div class="card-body">
                 <div class="col-md-6 m-auto">
                     <div class="row">
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="row " id="contentToPrint" >
             <div class="col-md-12">
                 <div class="card">
@@ -66,17 +66,19 @@
                             </div>
                             <div class="col-sm-6 m-b-20">
                                 <div class="invoice-details">
-                                    <h3 class="text-uppercase">Invoice #INV-{{$data->inv_id}} <span class="text-{{ $data->payment_status === 'paid' ? 'success' : ($data->payment_status === 'partial' ? 'warning' : 'danger') }}" style="font-size: 15px;">
-                                        {{ $data->payment_status }}
-                                    </span></h3>
+                                    <h3 class="text-uppercase">Invoice #INV-{{$data->inv_id}} </h3>
                                     <ul class="list-unstyled">
                                         <li>Print Date: <span>{{ \Carbon\Carbon::now()->format('d-m-y') }}</span></li>
                                         <li>Due date: <span>{{ \Carbon\Carbon::parse($data->expiry_date)->format('d-m-y') }}</span></li>
 
-                                        <hr style="color: #bdbdbd;padding:2px; margin:2px">
-                                        <h5>Invoice to:</h5>
+                                        <hr style="color: #cfcfcf;padding:2px; margin:2px">
+                                        <h6> Status :   <span class="text-{{ $data->payment_status === 'paid' ? 'success' : ($data->payment_status === 'partial' ? 'warning' : 'danger') }}" style="font-size: 15px;">
+                                            {{ $data->payment_status }}
+                                        </span></h6>
+                                        <hr style="color: #cfcfcf;padding:2px; margin:2px">
+                                        {{-- <h5>Invoice to:</h5> --}}
                                         <li>
-                                            <h5><strong>{{$data->client->name}}</strong></h5>
+                                            <h5>Invoice to: <strong>{{$data->client->name}}</strong></h5>
                                         </li>
                                         <li>{{$data->client->address}}</li>
                                         <li>{{$data->client->mobile}}</li>
@@ -126,11 +128,11 @@
                                                         <th>Subtotal:</th>
                                                         <td class="text-end">{{$data->subTotal}}/-</td>
                                                     </tr>
-                                                    <tr>
+                                                    {{-- <tr>
                                                         <th>Renew / Service Charge: <span class="text-regular"></span>
                                                         </th>
                                                         <td class="text-end">{{$data->service_fee}}/- {{$data->renewType}} </td>
-                                                    </tr>
+                                                    </tr> --}}
                                                     <tr>
                                                         <th>Discount: <span class="text-regular"></span>
                                                         </th>
@@ -148,7 +150,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="invoice-info">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <tr>
+                                        <th>Renew / Service Charge: <span class="text-regular"></span>
+                                        </th>
+                                        <td class="text-end">{{$data->service_fee}}/- {{$data->renewType}} </td>
+                                    </tr>
+                                </div>
+                            </div>
+                            <div class="invoice-info my-2">
                                 <h5>Other information</h5>
                                 <p style="border: 1px solid #d1d0d0; padding: 5px;" class="text-muted">{{$data->other_info}} </p>
                             </div>

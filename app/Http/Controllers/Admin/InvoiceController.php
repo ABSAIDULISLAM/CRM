@@ -9,6 +9,7 @@ use App\Models\InvoiceDetails;
 use App\Models\InvoiceSummary;
 use App\Models\Lead;
 use App\Models\Ledger;
+use App\Models\Payment;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -198,6 +199,13 @@ class InvoiceController extends Controller
 
         $data->update(['payment_status' => $status]);
 
+        Payment::create([
+            'user_id' => $request->id,
+            'inv_id' => $request->inv_id,
+            'date' => $request->date,
+            'paid_amount' => $request->paid_amount,
+            'payment_status' => Status::Unpaid,
+        ]);
 
         return redirect()->route('Invoice.index')->with('success', 'Invoice Payment Collected Successful');
     }
