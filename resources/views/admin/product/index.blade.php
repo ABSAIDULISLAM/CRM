@@ -38,25 +38,25 @@
 
         <hr>
 
-        <div class="filter-section">
-            <ul>
-                <li>
-                    <div class="search-set">
-                        <div class="search-input">
-                            <a href="#" class="btn btn-searchset"><i class="las la-search"></i></a>
-                            <div class="dataTables_filter">
-                                <label> <input type="search" class="form-control form-control-sm"
-                                        placeholder="Search"></label>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
+        <form id="searchForm" method="get">
+            @csrf
+            <div class="form-grou row">
+                <div class="col-md-10 my-3 col-10">
+                    <input id="searchInput" type="text" class="form-control" required placeholder="Search By Product Name, Category, Sub-category, Price, Slug, date">
+                </div>
+                <div class="col-md-2 my-3 col-2">
+                    <button type="submit" class="btn btn-secondary"><i class="las la-search"></i> Search</button> <!-- Change type to submit -->
+                </div>
+            </div>
+        </form>
+
         <div class="row">
             <div class="col-md-12">
+                <div id="loadingSpinner" style="display: none; text-align: center;">
+                    <i class="fas fa-spinner fa-spin"></i><p>Loading...</p>
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-striped custom-table datatable contact-table">
+                    <table id="example1" class="table table-striped custom-table datatable contact-table">
                         <thead>
                             <tr>
                                 <th class="no-sort"></th>
@@ -71,6 +71,7 @@
                         </thead>
                         <tbody>
                             @forelse ($products as $item)
+                            @if ($item->category && $item->subcategory)
                             <tr>
                                 <td>{{$loop->index+1}}</td>
                                 <td>
@@ -78,7 +79,7 @@
                                         <a href="{{route('Product.view',Crypt::encrypt($item->id)) }}" class="company-img">
                                             <img src="{{ asset($item->image ?: 'backend/assets/img/icons/company-icon-10.svg') }}" alt="Company Image">
                                         </a>
-                                        <a href="{{route('Product.view',Crypt::encrypt($item->id)) }}" class="profile-split">{{$item->name}}</a>
+                                        <a href="{{route('Product.view',Crypt::encrypt($item->id)) }}" class="profile-split text-success">{{$item->name}}</a>
                                     </h2>
                                 </td>
                                 <td> {{$item->category->name}}</td>
@@ -125,6 +126,8 @@
                                             </div>
                                       </div>
                                 </div>
+
+                            @endif
                             @empty
                             <tr><td colspan="5" class="text-center">No Data Found</td></tr>
                             @endforelse
@@ -134,6 +137,36 @@
             </div>
         </div>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#searchForm').on('submit', function(e){
+                e.preventDefault();
+                let query = $('#searchInput').val();
+                fetchFilteredData(query);
+            });
+
+            function fetchFilteredData(query) {
+                $('#loadingSpinner').show();
+                $.ajax({
+                    url: "{{ route('Product.search') }}",
+                    method: 'get',
+                    data: {
+                        query: query
+                    },
+                    success: function(response){
+                        $('#loadingSpinner').hide();
+                        $('#example1').html(response.html);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+
+        });
+    </script>
 
 
 @push('js')

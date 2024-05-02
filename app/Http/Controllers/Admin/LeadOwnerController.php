@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
+use App\Models\Lead;
 use App\Models\LeadOwner;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -129,8 +130,11 @@ class LeadOwnerController extends Controller
 
     public function view($id)
     {
+
+
         $id = Crypt::decrypt($id);
+        $leads = Lead::where('creator', $id)->get();
         $data = LeadOwner::with('user')->find($id);
-        return view('admin.lead-owner.view', compact('data'));
+        return view('admin.lead-owner.view', compact(['data', 'leads']));
     }
 }

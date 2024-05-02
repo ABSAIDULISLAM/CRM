@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class SenionAccountant
+class MarketingOfficerMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,10 +17,14 @@ class SenionAccountant
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            if (auth()->user()->role_as == 'senior_accountant') {
-                return $next($request);
+            if (auth()->user()->role_as == 'marketing_staff') {
+                if (auth()->user()->status == 'active') {
+                    return $next($request);
+                }else{
+                    return redirect()->back()->with('error', 'Account is not active. Contact With Admin To Active Your Account');
+                }
             } else {
-                return redirect()->back()->with('error', 'Access denied. You are Not Admin');
+                return redirect()->back()->with('error', 'Access Denied.! As you are not Marketing Stuff');
             }
         } else {
             return redirect()->back()->with('error', 'Please Login First.');

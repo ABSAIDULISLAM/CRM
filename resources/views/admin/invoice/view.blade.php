@@ -17,15 +17,15 @@
                 <div class="col">
                     <h3 class="page-title">Invoice</h3>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('Invoice.index')}}" class="text-success"><i class="fas fa-arrow-left"></i> Back</a>
                         </li>
                         <li class="breadcrumb-item active">Invoice</li>
                     </ul>
                 </div>
                 <div class="col-auto float-end ms-auto">
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-white">CSV</button>
-                        <button class="btn btn-white">PDF</button>
+                        {{-- <button class="btn btn-white">CSV</button>
+                        <button class="btn btn-white">PDF</button> --}}
                         <button  onclick="window.print();" class="btn btn-white"><i class="fa-solid fa-print fa-lg"></i>
                             Print</button>
                     </div>

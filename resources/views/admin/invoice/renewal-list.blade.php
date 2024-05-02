@@ -75,6 +75,10 @@
                         <tbody>
                             @forelse ($data as $item)
                             @if ($item->client)
+                                    @php
+                                        $paidAmount = App\Models\Ledger::where('inv_id', $item->inv_id)->sum('income');
+                                        $dueamount = $item->grand_total - $paidAmount;
+                                    @endphp
                             <tr>
                                 <td>{{$loop->index+1}}</td>
                                 <td class="text-end">
@@ -94,7 +98,7 @@
                                 <td><a href="{{ route('Invoice.view', Crypt::encrypt($item->id)) }}" class="text-success">{{$item->inv_id}}</a></td>
                                 <td>{{$item->client->name}}</td>
                                 <td>{{$item->grand_total}}</td>
-                                
+
                                 <td>{{$item->renewType}}</td>
                                 <td class="text-danger">
                                     @php

@@ -15,8 +15,6 @@ class Category extends Model
 
 
 
-
-
     // for delete subcatagory which same category id with subcategory id
     // public function subcategories()
     // {

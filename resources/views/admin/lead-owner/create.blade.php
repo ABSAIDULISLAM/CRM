@@ -34,17 +34,7 @@
         <div class="col-sm-12">
             <form action="{{route('Lead-owner.store')}}" method="POST" enctype="multipart/form-data">
                 @csrf
-                @if ($errors->any())
-                    <div class="">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                @php
-                                    toastr()->error($error);
-                                @endphp
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                @includeIf('errors.error')
                 <div class="row">
                     <div class="col-md-12 my-2 ">
                         <div class="input-block mb-3">
@@ -90,9 +80,8 @@
                     </div>
                     @php
                         $latestLeadOwner = App\Models\LeadOwner::latest()->first();
-                        $invoiceNumber = $latestLeadOwner ? intval(substr($latestLeadOwner->lead_owner_id, 5)) + 1 : 1;
-                        $paddedInvoiceNumber = str_pad($invoiceNumber, 6, '0', STR_PAD_LEFT);
-                        $invoiceId = '#LOID' . $paddedInvoiceNumber;
+                        $invoiceNumber = $latestLeadOwner ? $latestLeadOwner->lead_owner_id + 1 : 10001;
+
                     @endphp
 
                     <div class="col-md-6 my-2">
@@ -101,7 +90,7 @@
                                 <h5>Lead Owner Id<span class="text-danger">*</span></h5>
                             </label>
                             <div class="user-icon">
-                                <input type="text" name="lead_owner_id" id="lead_owner_id" placeholder="Lead Owner Id" value="{{ $invoiceId }}" readonly
+                                <input type="text" name="lead_owner_id" id="lead_owner_id" placeholder="Lead Owner Id" value="{{ $invoiceNumber }}" readonly
                                     class="form-control @error('lead_owner_id') is-invalid border border-danger @enderror" required>
                                 @if ($errors->has('lead_owner_id'))
                                     <span class="error text-danger ms-5">{{ $errors->first('lead_owner_id') }}</span>
@@ -113,7 +102,7 @@
                     <div class="col-md-6 my-2">
                         <div class="input-block mb-3">
                             <label class="col-form-label" for="name">
-                                <h5>Lead Owner Image<span class="text-danger">*</span></h5>
+                                <h5>Lead Owner Image<span class="text-danger"></span></h5>
                             </label>
                             <div class="user-icon">
                                 <input type="file" name="image" id="lead_owner_id" placeholder="Lead Owner Id"
@@ -169,7 +158,7 @@
                     </div>
                 </div>
 
-                <div class="submit-section">
+                <div class="submit-section my-3">
                     <button class="btn btn-primary submit-btn">Submit</button>
                 </div>
             </form>

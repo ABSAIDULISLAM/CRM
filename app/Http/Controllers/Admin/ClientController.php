@@ -4,9 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Client;
+use App\Models\InvoiceSummary;
+use App\Models\Product;
+use App\Models\SubCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
 {
@@ -24,19 +30,32 @@ class ClientController extends Controller
     {
         $request->validate([
             'creator' => ['exists:users,id'],
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:leads,email'],
-            'mobile' => ['required', 'regex:/\+?(88)?0?1[3-9][0-9]{8}\b/', 'max:15','unique:leads,email'],
+            'name' => ['required', 'string', 'max:255', 'unique:users,mobile'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'mobile' => ['required', 'regex:/\+?(88)?0?1[3-9][0-9]{8}\b/', 'max:15'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'],
             'address' => ['required', 'max:256'],
         ]);
 
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'mobile' => $request->mobile,
+            'role_as' => Status::User,
+            'password' => Hash::make('password'),
+            'status' => Status::Active,
+        ]);
+
         $client = new Client();
+        $client->user_id = $user->id;
         $client->name = $request->name;
         $client->email = $request->email;
         $client->mobile = $request->mobile;
         $client->status = $request->status;
         $client->address = $request->address;
+        $client->category_id = $request->category_id;
+        $client->sub_category_id = $request->sub_category_id;
+        $client->product_id = $request->product_id;
         $client->status = Status::Active->value;
         $client->creator = auth()->user()->id;
         if ($request->hasFile('image')) {
@@ -52,6 +71,7 @@ class ClientController extends Controller
     {
         $id = Crypt::decrypt($id);
         $client =Client::find($id);
+
         return view('admin.client.edit',compact('client'));
     }
 
@@ -59,8 +79,8 @@ class ClientController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:leads,email'],
-            'mobile' => ['required', 'regex:/\+?(88)?0?1[3-9][0-9]{8}\b/', 'max:15','unique:leads,email'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
+            'mobile' => ['required', 'regex:/\+?(88)?0?1[3-9][0-9]{8}\b/', 'max:15'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'],
             'address' => ['required', 'max:256'],
         ]);
@@ -83,13 +103,6 @@ class ClientController extends Controller
 
         return redirect()->route('Client.index')->with('success', 'Client Updated Successful');
     }
-
-    // public function view($id)
-    // {
-    //     $id = Crypt::decrypt($id);
-    //     $data = Client::find($id);
-    //     return view('admin.client.view', compact('data'));
-    // }
 
     public function statusUpdate($id)
     {
@@ -117,11 +130,36 @@ class ClientController extends Controller
 
         return redirect()->route('Client.index')->with('success', 'Client Deleted Successful');
     }
+
     public function view($id)
     {
         $id = Crypt::decrypt($id);
-        $data = Client::with('user')->find($id);
+        // $data = Client::with('user')->where('');
+
+        $data = InvoiceSummary::where('client_id', $id)->with(['invdetails', 'client', 'creator'])->get();
+
         return view('admin.client.view', compact('data'));
     }
+
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $clients = Client::where(function ($q) use ($query) {
+                $q->where('name', 'like', "%$query%")
+                ->orWhere('mobile', 'like', "%$query%")
+                ->orWhere('email', 'like', "%$query%")
+                ->orWhere('created_at', 'like', "%$query%")
+                ->orWhere('status', 'like', "%$query%");
+            })
+            ->with('user')
+            ->paginate(10);
+
+        $html = view('admin.Client.search', compact('clients'))->render();
+
+        return response()->json(['html' => $html]);
+    }
+
 
 }

@@ -14,6 +14,7 @@
 
 
     <div class="content container-fluid">
+
         <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-md-4">
@@ -42,25 +43,26 @@
             </div>
         </div>
         <hr>
-        <div class="filter-section">
-            <ul>
-                <li>
-                    <div class="search-set">
-                        <div class="search-input">
-                            <a href="#" class="btn btn-searchset"><i class="las la-search"></i></a>
-                            <div class="dataTables_filter">
-                                <label> <input type="search" class="form-control form-control-sm"
-                                        placeholder="Search"></label>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
+
+        <form id="searchForm" method="get">
+            @csrf
+            <div class="form-grou row">
+                <div class="col-md-10 my-3 col-10">
+                    <input id="searchInput" type="text" class="form-control" required placeholder="Search By Estimate No, Lead name, Estimate Date, Status">
+                </div>
+                <div class="col-md-2 my-3 col-2">
+                    <button type="submit" class="btn btn-secondary"><i class="las la-search"></i> Search</button> <!-- Change type to submit -->
+                </div>
+            </div>
+        </form>
+
         <div class="row">
             <div class="col-md-12">
+                <div id="loadingSpinner" style="display: none; text-align: center;">
+                    <i class="fas fa-spinner fa-spin"></i><p>Loading...</p>
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-striped custom-table datatable contact-table">
+                    <table id="example1" class="table table-striped custom-table datatable contact-table">
                         <thead>
                             <tr>
                                 <th>Sl.</th>
@@ -99,7 +101,7 @@
                                                     <a class="dropdown-item"
                                                         href="{{ route('Estimate.convert.invoice', Crypt::encrypt($item->id)) }}"
                                                         onclick="return confirm('Are you sure to This Item Convert To Invoice ?? ')"><i
-                                                            class="fa-regular fa-eye"></i>
+                                                            class="fas fa-exchange-alt"></i>
                                                         Convert to Invoice</a>
                                                 </div>
                                             </div>
@@ -317,6 +319,35 @@
         });
     </script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#searchForm').on('submit', function(e){
+            e.preventDefault();
+            let query = $('#searchInput').val();
+            fetchFilteredData(query);
+        });
+
+        function fetchFilteredData(query) {
+            $('#loadingSpinner').show();
+            $.ajax({
+                url: "{{ route('Estimate.search') }}",
+                method: 'get',
+                data: {
+                    query: query
+                },
+                success: function(response){
+                    $('#loadingSpinner').hide();
+                    $('#example1').html(response.html);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+    });
+</script>
 
     @includeIf('admin.estimate.partial.filter')
 

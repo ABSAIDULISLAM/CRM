@@ -20,7 +20,7 @@
                 <div class="col-md-4">
                     <h3 class="page-title">Clients</h3>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('Admin.dashboard')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{ route('Admin.dashboard') }}">Dashboard</a>
                         </li>
                         <li class="breadcrumb-item active">Clients</li>
                     </ul>
@@ -34,11 +34,7 @@
                                     class="las la-filter"></i></a>
                         </div>
                         <div class="form-sort">
-                            {{-- <a href="javascript:void(0);" class="list-view btn btn-link" data-bs-toggle="modal"
-                                data-bs-target="#export"><i class="las la-file-export"></i>Export</a> --}}
-                        </div>
-                        <a href="{{route('Client.create')}}" class="btn add-btn" ><i
-                                class="la la-plus-circle"></i> Add
+                        <a href="{{ route('Client.create') }}" class="btn add-btn"><i class="la la-plus-circle"></i> Add
                             Client</a>
                     </div>
                 </div>
@@ -97,26 +93,26 @@
         </div>
         <hr>
 
-        <div class="filter-section">
-            <ul>
-                <li>
-                    <div class="search-set">
-                        <div class="search-input">
-                            <a href="#" class="btn btn-searchset"><i class="las la-search"></i></a>
-                            <div class="dataTables_filter">
-                                <label> <input type="search" class="form-control form-control-sm"
-                                        placeholder="Search"></label>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
+        <form id="searchForm" method="get">
+            @csrf
+            <div class="form-grou row">
+                <div class="col-md-10 my-3 col-10">
+                    <input id="searchInput" type="text" class="form-control" required placeholder="Search By Client Name, Mobile, Email, Date, Status">
+                </div>
+                <div class="col-md-2 my-3 col-2">
+                    <button type="submit" class="btn btn-secondary"><i class="las la-search"></i> Search</button> <!-- Change type to submit -->
+                </div>
+            </div>
+        </form>
 
         <div class="row">
             <div class="col-md-12">
+                <div id="loadingSpinner" style="display: none; text-align: center;">
+                    {{-- <img src="loading.gif" alt="Loading..."> --}}
+                    <i class="fas fa-spinner fa-spin"></i><p>Loading...</p> <!-- Optional loading message -->
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-striped custom-table datatable contact-table">
+                    <table id="example1" class="table table-striped custom-table datatable contact-table">
                         <thead>
                             <tr>
                                 <th>Sl.</th>
@@ -124,6 +120,7 @@
                                 <th>Mobile</th>
                                 <th>Email</th>
                                 <th>Address</th>
+                                {{-- <th>Product</th> --}}
                                 <th>Created By</th>
                                 <th>Created Date</th>
                                 <th>Status</th>
@@ -136,20 +133,25 @@
                                     <td>{{ $loop->index + 1 }}</td>
                                     <td>
                                         <h2 class="table-avatar d-flex align-items-center">
-                                            <a href="{{route('Client.view',['id' => Crypt::encrypt($item->id)])}}" class="company-img">
+                                            <a href="{{ route('Client.view', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                class="company-img">
                                                 <img src="{{ asset($item->image ?: 'backend/assets/img/icons/company-icon-10.svg') }}"
                                                     alt="Company Image">
                                             </a>
-                                            <a href="{{route('Client.view',['id' => Crypt::encrypt($item->id)])}}" class="profile-split">{{ $item->name }}</a>
+                                            <a href="{{ route('Client.view', ['id' => Crypt::encrypt($item->id)]) }}"
+                                                class="profile-split text-success">{{ $item->name }}</a>
                                         </h2>
                                     </td>
                                     <td> {{ $item->mobile }}</td>
-                                    <td> {{ $item->email }}</td>
+                                    <td> {{ $item->email ?? 'null' }}</td>
                                     <td> {{ $item->address }}</td>
+                                    {{-- <td> {{ $item->product->name }}</td> --}}
                                     <td> {{ $item->user->name }}</td>
                                     <td> {{ $item->created_at }}</td>
                                     <td>
-                                        <a href="{{route('Client.status.update',['id' => Crypt::encrypt($item->id)])}}" onclick="return confirm('Aye you sure to change status ??')" class="text-white btn btn-sm badge-{{ $item->status == 'active' ? 'success' : 'danger' }}">
+                                        <a href="{{ route('Client.status.update', ['id' => Crypt::encrypt($item->id)]) }}"
+                                            onclick="return confirm('Aye you sure to change status ??')"
+                                            class="text-white btn btn-sm badge-{{ $item->status == 'active' ? 'success' : 'danger' }}">
                                             {{ $item->status }}
                                         </a>
                                     </td>
@@ -190,7 +192,7 @@
                                             </div>
                                         </div>
                                     </div>
-                            @empty
+                                @empty
                                     <tr>
                                         <td colspan="9" class="text-center">No Data Found</td>
                                     </tr>
@@ -208,7 +210,35 @@
     @includeIf('admin.lead.partial.contact-record-result')
     @includeIf('admin.lead.partial.next-contact-date')
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#searchForm').on('submit', function(e){
+                e.preventDefault();
+                let query = $('#searchInput').val();
+                fetchFilteredData(query);
+            });
 
+            function fetchFilteredData(query) {
+                $('#loadingSpinner').show();
+                $.ajax({
+                    url: "{{ route('Client.search') }}",
+                    method: 'get',
+                    data: {
+                        query: query
+                    },
+                    success: function(response){
+                        $('#loadingSpinner').hide();
+                        $('#example1').html(response.html);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+
+        });
+    </script>
     @push('js')
         <script src="{{ asset('backend/assets/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('backend/assets/js/dataTables.bootstrap4.min.js') }}" type="text/javascript"></script>

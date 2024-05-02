@@ -27,7 +27,7 @@
 
         </div>
     </div>
-
+    @includeIf('errors.error')
     <div class="row">
         <div class="col-sm-12">
             <form method="POST" action="{{ route('Estimate.store') }}" enctype="multipart/form-data">
@@ -57,8 +57,7 @@
 
                     @php
                         $latesinvoice = App\Models\InvoiceSummary::latest()->first();
-                        $invoiceId = $latesinvoice ? intval($latesinvoice->inv_id) + 1 : 100001;
-                        $invoiceId = str_pad($invoiceId, 5, '0', STR_PAD_LEFT);
+                        $invoiceId = $latesinvoice ? $latesinvoice->inv_id + 1 : 100001;
                     @endphp
 
                     <div class="col-md-6 my-2">
@@ -203,7 +202,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <input required value="1"
+                                                <input required
                                                     class="form-control qty @error('qty') is-invalid border border-danger @enderror"
                                                     name="qty[]" type="number">
                                                 @if ($errors->has('qty'))
@@ -246,7 +245,7 @@
                                         <tr>
                                             <td colspan="5" class="text-end">Discount</td>
                                             <td class="text-end pe-4">
-                                                <input name="discount"
+                                                <input name="discount" value="0"
                                                     class="form-control text-end discount @error('discount') is-invalid border border-danger @enderror"
                                                     type="number">
                                             </td>
@@ -418,7 +417,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <input class="form-control qty" name="qty[]" type="number" value="1">
+                                            <input class="form-control qty" name="qty[]" type="number">
                                             @if ($errors->has('qty'))
                                                 <span class="error text-danger ms-5">{{ $errors->first('qty') }}</span>
                                             @endif

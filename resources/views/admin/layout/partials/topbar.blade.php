@@ -49,19 +49,11 @@
                 <a href="javascript:void(0);" class="dropdown-item">
                     <img src="{{asset('backend/assets/img/flags/us.png')}}" alt="Flag" height="16"> English
                 </a>
-                <a href="javascript:void(0);" class="dropdown-item">
-                    <img src="{{asset('backend/assets/img/flags/fr.png')}}" alt="Flag" height="16"> French
-                </a>
-                <a href="javascript:void(0);" class="dropdown-item">
-                    <img src="{{asset('backend/assets/img/flags/es.png')}}" alt="Flag" height="16"> Spanish
-                </a>
-                <a href="javascript:void(0);" class="dropdown-item">
-                    <img src="{{asset('backend/assets/img/flags/de.png')}}" alt="Flag" height="16"> German
-                </a>
+
             </div>
         </li>
 
-
+{{--
         <li class="nav-item dropdown">
             <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
                 <i class="fa-regular fa-bell"></i> <span class="badge rounded-pill">3</span>
@@ -279,16 +271,16 @@
                     <a href="chat.html">View all Messages</a>
                 </div>
             </div>
-        </li>
+        </li> --}}
 
         <li class="nav-item dropdown has-arrow main-drop">
             <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
                 <span class="user-img"><img src="{{asset('backend/assets/img/avatar/avatar-27.jpg')}}" alt="User Image">
                     <span class="status online"></span></span>
-                <span>Admin</span>
+                <span>{{auth()->user()->name}}</span>
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="{{route('Admin.profile')}}">My Profile</a>
+                <a class="dropdown-item" href="{{route('profile')}}">My Profile</a>
                 <a class="dropdown-item" href="settings.html">Settings</a>
                 <a class="dropdown-item" href="{{ route('logout') }}"
                 onclick="event.preventDefault();

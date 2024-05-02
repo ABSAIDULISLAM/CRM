@@ -31,10 +31,7 @@
                             <a href="javascript:void(0);" class="list-view btn btn-link" id="filter_search"><i
                                     class="las la-filter"></i></a>
                         </div>
-                        <div class="form-sort">
-                            {{-- <a href="javascript:void(0);" class="list-view btn btn-link" data-bs-toggle="modal"
-                                data-bs-target="#export"><i class="las la-file-export"></i>Export</a> --}}
-                        </div>
+                        <div class="form-sort"></div>
                         <a href="{{route('Lead.create')}}" class="btn add-btn" ><i
                                 class="la la-plus-circle"></i> Add
                             Leads</a>
@@ -42,93 +39,43 @@
                 </div>
             </div>
         </div>
-
-        <div class="filter-filelds" id="filter_inputs">
-            <div class="row filter-row">
-                <div class="col-xl-2">
-                    <div class="input-block mb-3 form-focus">
-                        <input type="text" class="form-control floating">
-                        <label class="focus-label">Lead Name</label>
-                    </div>
-                </div>
-                <div class="col-xl-2">
-                    <div class="input-block mb-3 form-focus">
-                        <input type="email" class="form-control floating">
-                        <label class="focus-label">Email</label>
-                    </div>
-                </div>
-                <div class="col-xl-2">
-                    <div class="input-block mb-3 form-focus focused">
-                        <input type="text" class="form-control  date-range bookingrange">
-                        <label class="focus-label">From - To Date</label>
-                    </div>
-                </div>
-                <div class="col-xl-2">
-                    <div class="input-block mb-3 form-focus select-focus">
-                        <select class="select floating">
-                            <option>--Select--</option>
-                            <option>Closed</option>
-                            <option>Not Contacted</option>
-                            <option>Contacted</option>
-                            <option>Lost</option>
-                        </select>
-                        <label class="focus-label">Lead Status</label>
-                    </div>
-                </div>
-                <div class="col-xl-2">
-                    <div class="input-block mb-3 form-focus select-focus">
-                        <select class="select floating">
-                            <option>--Select--</option>
-                            <option>NovaWaveLLC</option>
-                            <option>SilverHawk</option>
-                            <option>SummitPeak</option>
-                            <option>HarborView</option>
-                            <option>Redwood Inc</option>
-                        </select>
-                        <label class="focus-label">Lead Name</label>
-                    </div>
-                </div>
-                <div class="col-xl-2">
-                    <a href="#" class="btn btn-success w-100"> Search </a>
-                </div>
-            </div>
-        </div>
         <hr>
 
-        <div class="filter-section">
-            <ul>
-                <li>
-                    <div class="search-set">
-                        <div class="search-input">
-                            <a href="#" class="btn btn-searchset"><i class="las la-search"></i></a>
-                            <div class="dataTables_filter">
-                                <label> <input type="search" class="form-control form-control-sm"
-                                        placeholder="Search"></label>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
+        <form id="searchForm" method="get">
+            @csrf
+            <div class="form-grou row">
+                <div class="col-md-10 my-3 col-10">
+                    <input id="searchInput" type="text" class="form-control" required placeholder="Search By Company Name, Contact Person, Phone, Email, Product, Date">
+                </div>
+                <div class="col-md-2 my-3 col-2">
+                    <button type="submit" class="btn btn-secondary"><i class="las la-search"></i> Search</button> <!-- Change type to submit -->
+                </div>
+            </div>
+        </form>
 
         <div class="row">
             <div class="col-md-12">
+                <div id="loadingSpinner" style="display: none; text-align: center;">
+                    {{-- <img src="loading.gif" alt="Loading..."> --}}
+                    <i class="fas fa-spinner fa-spin"></i><p>Loading...</p> <!-- Optional loading message -->
+                </div>
                 <div class="table-responsive">
                     @php
                         use App\Models\ContactLead;
                     @endphp
-                    <table class="table table-striped custom-table datatable contact-table">
+                    <table id="example1" class="table table-striped custom-table datatable contact-table">
                         <thead>
                             <tr>
                                 <th>Sl.</th>
                                 <th class="no-sort text-end">Action</th>
-                                <th>Company Name</th>
                                 <th>Lead Name</th>
+                                <th>Contact Person</th>
                                 <th>Phone</th>
                                 <th>Email</th>
                                 <th>Last Contact</th>
                                 <th>Next contact date</th>
                                 <th>contact record</th>
+                                <th>Product</th>
                                 <th>Lead Status</th>
                                 <th>Created Date</th>
                                 <th>Lead Owner</th>
@@ -144,7 +91,7 @@
                                             aria-expanded="false"><i class="material-icons">more_vert</i></a>
                                         <div class="dropdown-menu dropdown-menu-right">
                                             @if ($item->status == 'active')
-                                            <a class="dropdown-item" href="{{route('Lead.convert.client',['id' => Crypt::encrypt($item->id)]) }}"  onclick="return confirm('Aye you sure to Convert This Lead Into CLient ??')"><i class="fa-solid fa-pencil m-r-5"></i>
+                                            <a class="dropdown-item" href="{{route('Lead.convert.client',['id' => Crypt::encrypt($item->id)]) }}"  onclick="return confirm('Aye you sure to Convert This Lead Into CLient ??')"><i class="fas fa-exchange-alt m-r-5"></i>
                                                 Convret To Client</a>
                                             @endif
                                             <a class="dropdown-item" href="#" onclick="contactModal({{$item->id}})"><i
@@ -152,8 +99,8 @@
                                                 Contact Record</a>
                                             <a class="dropdown-item" href="{{route('Lead.edit',['id' => Crypt::encrypt($item->id)]) }}"><i class="fa-solid fa-pencil m-r-5"></i>
                                                 Edit</a>
-                                            <a class="dropdown-item" href="{{route('Lead.view',['id' => Crypt::encrypt($item->id)]) }}"><i class="fa-regular fa-eye m-r-5"></i>
-                                                Preview</a>
+                                            {{-- <a class="dropdown-item" href="{{route('Lead.view',['id' => Crypt::encrypt($item->id)]) }}"><i class="fa-regular fa-eye m-r-5"></i>
+                                                Preview</a> --}}
                                             <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                                 data-bs-target="#delete_company"><i
                                                     class="fa-regular fa-trash-can m-r-5"></i>
@@ -161,17 +108,18 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{$item->company_name}}</td>
                                 <td>
                                     <h2 class="table-avatar d-flex align-items-center">
                                         <a href="{{route('Lead.view',['id' => Crypt::encrypt($item->id)]) }}" class="company-img">
                                             <img src="{{ asset($item->image ?: 'backend/assets/img/icons/company-icon-10.svg') }}" alt="Company Image">
                                         </a>
-                                        <a class="text-success text-bold" href="{{route('Lead.view',['id' => Crypt::encrypt($item->id)]) }}" class="profile-split">{{$item->name}}</a>
+                                        <a class="text-success text-bold" href="{{route('Lead.view',['id' => Crypt::encrypt($item->id)]) }}" class="profile-split">{{$item->company_name}}</a>
                                     </h2>
                                 </td>
+                                <td>{{$item->name}}</td>
+
                                 <td> {{$item->mobile}}</td>
-                                <td> {{$item->email}}</td>
+                                <td> {{$item->email ?? 'null'}}</td>
                                 <td>
                                     @php
                                         $lastInfo = ContactLead::where('lead_id', $item->id)->latest()->first();
@@ -204,19 +152,20 @@
 
                                     {{ $lastInfo->note ?? 'null'}}
                                 </td>
+                                <td> {{$item->product->name ?? 'Null'}}</td>
                                 <td>
                                     <a href="{{route('Lead.status.update',['id' => Crypt::encrypt($item->id)])}}" onclick="return confirm('Aye you sure to change status ??')" class="text-white btn btn-sm badge-{{ $item->status == 'active' ? 'success' : 'danger' }}">
                                         {{ $item->status }}
                                     </a>
                                 </td>
-                                <td> {{$item->created_at}}</td>
+                                <td> {{$item->created_at->format('Y-m-d')}}</td>
                                 <td> {{$item->user->name}}</td>
 
                             </tr>
                             @includeIf('admin.lead.partial.delete')
                             @includeIf('admin.lead.partial.contact-record-result')
                             @empty
-                            <tr><td colspan="9" class="text-center">No Data Found</td></tr>
+                            <tr><td colspan="12" class="text-center">No Data Found</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -231,12 +180,43 @@
     @includeIf('admin.lead.partial.next-contact-date')
 
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     function contactModal(id){
         $('#NextContactDate').modal('show');
         $('#NextContactDate').find('input[name="id"]').val(id);
     }
 </script>
+
+<script>
+    $(document).ready(function(){
+        $('#searchForm').on('submit', function(e){
+            e.preventDefault();
+            let query = $('#searchInput').val();
+            fetchFilteredData(query);
+        });
+
+        function fetchFilteredData(query) {
+            $('#loadingSpinner').show();
+            $.ajax({
+                url: "{{ route('Lead.search') }}",
+                method: 'get',
+                data: {
+                    query: query
+                },
+                success: function(response){
+                    $('#loadingSpinner').hide();
+                    $('#example1').html(response.html);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+    });
+</script>
+
 
 @endsection
 

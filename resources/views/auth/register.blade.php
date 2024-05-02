@@ -36,17 +36,7 @@
 
                         <form action="{{ route('register') }}" method="POST">
                             @csrf
-                            @if ($errors->any())
-                                <div class="">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            @php
-                                                toastr()->error($error);
-                                            @endphp
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
+                            @includeIf('errors.error')
                             <div class="input-block mb-4">
                                 <label class="col-form-label">Full Name<span class="mandatory">*</span></label>
                                 <input class="form-control @error('name') is-invalid border border-danger @enderror"

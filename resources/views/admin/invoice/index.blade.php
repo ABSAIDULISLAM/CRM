@@ -49,18 +49,19 @@
                         <div class="search-input">
                             <a href="#" class="btn btn-searchset"><i class="las la-search"></i></a>
                             <div class="dataTables_filter">
-                                <label> <input type="search" class="form-control form-control-sm"
-                                        placeholder="Search"></label>
+                                <label> <input type="search" id="searchInput" class="form-control form-control-sm"
+                                        placeholder="Search by INV, Name"></label>
                             </div>
                         </div>
                     </div>
                 </li>
             </ul>
         </div>
+
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table class="table table-striped custom-table datatable contact-table">
+                    <table id="example1" class="table table-striped custom-table datatable contact-table">
                         <thead>
                             <tr>
                                 <th>Sl.</th>
@@ -303,22 +304,47 @@
         });
     </script>
 
-
-
  @includeIf('admin.invoice.partial.filter')
 
 
-    @push('js')
-        <script src="{{ asset('backend/assets/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('backend/assets/js/dataTables.bootstrap4.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('backend/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}" type="text/javascript">
-        </script>
-        <script src="{{ asset('backend/assets/js/moment.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('backend/assets/js/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('backend/assets/plugins/daterangepicker/daterangepicker.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('backend/assets/js/select2.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('backend/assets/js/theme-settings.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('backend/assets/js/greedynav.js') }}" type="text/javascript"></script>
-    @endpush
-
 @endsection
+
+@push('js')
+<script src="{{ asset('backend/assets/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('backend/assets/js/dataTables.bootstrap4.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('backend/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}" type="text/javascript">
+</script>
+<script src="{{ asset('backend/assets/js/moment.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('backend/assets/js/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('backend/assets/plugins/daterangepicker/daterangepicker.js') }}" type="text/javascript"></script>
+<script src="{{ asset('backend/assets/js/select2.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('backend/assets/js/theme-settings.js') }}" type="text/javascript"></script>
+<script src="{{ asset('backend/assets/js/greedynav.js') }}" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function(){
+        $('#searchInput').on('input', function(){
+            var query = $(this).val();
+            fetchFilteredData(query);
+        });
+
+        function fetchFilteredData(query) {
+            $.ajax({
+                url: "{{ route('Invoice.search') }}",
+                method: 'GET',
+                data: {
+                    query: query
+                },
+                success: function(response){
+                    $('#example1').html(response.html);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+    });
+</script>
+
+
+@endpush

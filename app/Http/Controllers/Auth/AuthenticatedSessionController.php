@@ -19,7 +19,6 @@ class AuthenticatedSessionController extends Controller
      * Display the login view.
      */
 
-
     public function create(): View
     {
         return view('auth.login');
@@ -28,7 +27,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request):RedirectResponse
+    public function store(LoginRequest $request): RedirectResponse
     {
         $user = User::where('email', $request->email)->first();
 
@@ -39,8 +38,17 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME)->with('success', 'Welcome'.' '. $user->name .' '. 'In Our Empire');
+        if ($user->role_as === 'admin') {
+            return redirect()->intended(RouteServiceProvider::ADMIN_HOME)->with('success', 'Welcome, ' . $user->name . '!');
+        } elseif ($user->role_as === 'office_staff') {
+            return redirect()->intended(RouteServiceProvider::OFFICE_STAFF_HOME)->with('success', 'Welcome, ' . $user->name . '!');
+        } elseif ($user->role_as === 'marketing_staff') {
+            return redirect()->intended(RouteServiceProvider::MARKETING_STAFF_HOME)->with('success', 'Welcome, ' . $user->name . '!');
+        } else {
+            return redirect()->intended(RouteServiceProvider::USER_HOME)->with('success', 'Welcome, ' . $user->name . '!');
+        }
     }
+
 
     /**
      * Destroy an authenticated session.

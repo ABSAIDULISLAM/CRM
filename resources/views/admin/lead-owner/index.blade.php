@@ -34,35 +34,17 @@
         </div>
 
 
-        <div class="row filter-row">
-            <div class="col-sm-6 col-md-3">
-                <div class="input-block mb-3 form-focus">
-                    <input type="text" class="form-control floating">
-                    <label class="focus-label">Lead owner ID</label>
+        <form id="searchForm" method="get">
+            @csrf
+            <div class="form-grou row">
+                <div class="col-md-10 my-3 col-10">
+                    <input id="searchInput" type="text" class="form-control" required placeholder="Search By Company Name, Contact Person, Phone, Email, Product, Date">
+                </div>
+                <div class="col-md-2 my-3 col-2">
+                    <button type="submit" class="btn btn-secondary"><i class="las la-search"></i> Search</button> <!-- Change type to submit -->
                 </div>
             </div>
-            <div class="col-sm-6 col-md-3">
-                <div class="input-block mb-3 form-focus">
-                    <input type="text" class="form-control floating">
-                    <label class="focus-label">Lead owner Name</label>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-3">
-                <div class="input-block mb-3 form-focus select-focus">
-                    <select class="select floating">
-                        <option>Select Company</option>
-                        <option>Global Technologies</option>
-                        <option>Delta Infotech</option>
-                    </select>
-                    <label class="focus-label">Company</label>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-3">
-                <div class="d-grid">
-                    <a href="#" class="btn btn-success"> Search </a>
-                </div>
-            </div>
-        </div>
+        </form>
 
         <div class="row">
             <div class="col-md-12">
@@ -141,6 +123,38 @@
             </div>
         </div>
     </div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $('#searchForm').on('submit', function(e){
+            e.preventDefault();
+            let query = $('#searchInput').val();
+            fetchFilteredData(query);
+        });
+
+        function fetchFilteredData(query) {
+            $('#loadingSpinner').show();
+            $.ajax({
+                url: "{{ route('Lead.search') }}",
+                method: 'get',
+                data: {
+                    query: query
+                },
+                success: function(response){
+                    $('#loadingSpinner').hide();
+                    $('#example1').html(response.html);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+    });
+</script>
 
     @push('js')
         <script src="{{ asset('backend/assets/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>

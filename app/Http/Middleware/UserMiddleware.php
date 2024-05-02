@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class CounselorMiddleware
+class UserMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,10 +17,14 @@ class CounselorMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            if (auth()->user()->role_as == 'counselor') {
-                return $next($request);
+            if (auth()->user()->role_as == 'user') {
+                if (auth()->user()->status == 'active') {
+                    return $next($request);
+                }else{
+                    return redirect()->back()->with('error', 'Account is not active. Contact With Admin To Active Your Account');
+                }
             } else {
-                return redirect()->back()->with('error', 'Access denied. You are Not Counselor');
+                return redirect()->back()->with('error', 'Access Denied.! As you are not User');
             }
         } else {
             return redirect()->back()->with('error', 'Please Login First.');

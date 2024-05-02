@@ -96,12 +96,12 @@
                         <div class="col-md-6 my-2">
                             <div class="input-block mb-3">
                                 <label class="col-form-label" for="email">
-                                    <h5>Email<span class="text-danger"></span></h5>
+                                    <h5>Email<span class="text-danger">*</span></h5>
                                 </label>
                                 <div class="user-icon">
                                     <input type="email" name="email" id="email" placeholder="Valid Email"
                                         class="form-control @error('email') is-invalid border border-danger @enderror"
-                                         value="{{ old('email') }}">
+                                        value="{{ old('email') }}">
                                     @if ($errors->has('email'))
                                         <span class="error text-danger ms-5">{{ $errors->first('email') }}</span>
                                     @endif
@@ -123,11 +123,10 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-lg-12 text-center form-wizard-button">
+                        <div class="col-lg-12 text-center form-wizard-button my-4">
                             <button class="button btn-lights reset-btn" type="reset"
                                 data-bs-dismiss="modal">Reset</button>
-                            <button class="btn btn-primary" type="submit">Save Lead</button>
+                            <button class="btn btn-primary" type="submit">Save Client</button>
                         </div>
                     </div>
                 </div>
@@ -146,7 +145,7 @@
     <script>
         $(document).ready(function() {
             $('button[type="submit"]').prop('disabled', true);
-            $('.form-control').on('input', function () {
+            $('.form-control').on('input', function() {
                 var form = $(this).closest('form');
                 var requiredFields = form.find('.form-control[required]');
                 var invalidFields = requiredFields.filter(function() {

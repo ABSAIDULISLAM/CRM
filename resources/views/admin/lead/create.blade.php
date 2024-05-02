@@ -1,3 +1,15 @@
+@php
+    if (auth()->user()->role_as == 'admin') {
+        $myRoute = 'Admin.';
+    } elseif (auth()->user()->role_as == 'office_staff') {
+        $myRoute = 'Office.';
+    } elseif (auth()->user()->role_as == 'marketing_staff') {
+        $myRoute = 'Marketing.';
+    } else {
+        $myRoute = 'User.';
+    }
+@endphp
+
 @extends('admin.layout.app')
 
 @section('title', 'Create-Lead')
@@ -24,17 +36,7 @@
             <div class="col-sm-12">
                 <form action="{{ route('Lead.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    @if ($errors->any())
-                        <div class="">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    @php
-                                        toastr()->error($error);
-                                    @endphp
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                    @includeIf('errors.error')
                     <div class="contact-input-set">
                         <div class="row">
                             <div class="col-md-12 my-2">
@@ -120,7 +122,7 @@
                             <div class="col-md-6 my-2">
                                 <div class="input-block mb-3">
                                     <label class="col-form-label" for="email">
-                                        <h5>Email<span class="text-danger"></span></h5>
+                                        <h5>Email<span class="text-danger">*</span></h5>
                                     </label>
                                     <div class="user-icon">
                                         <input type="email" name="email" id="email" placeholder="Valid Email"
@@ -148,13 +150,75 @@
                                 </div>
                             </div>
                             <hr>
+
+                            <div class="col-md-12 my-3">
+                                <div class="card-header p-2" style="background-color: rgb(241, 218, 218)"><h5>Product Details</h5></div>
+                            </div>
+
+                            {{-- <div class="col-md-4 my-2">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label">
+                                        <h5>Product Category<span class="text-danger">*</span></h5>
+                                    </label>
+                                    <div class="user-icon">
+                                        <select name="category_id" id="catId" class="form-control @error('category_id') is-invalid border border-danger @enderror" required>
+                                            <option disabled selected>Select Category</option>
+                                            @forelse ($category as $item)
+                                                <option value="{{$item->id}}">{{$item->name}}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        @if ($errors->has('category_id'))
+                                            <span class="error text-danger ms-5">{{ $errors->first('category_id') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 my-2">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label">
+                                        <h5>Sub Category<span class="text-danger">*</span></h5>
+                                    </label>
+                                    <div class="user-icon">
+                                        <select name="sub_category_id" id="subCategoryId" class="form-control @error('sub_category_id') is-invalid border border-danger @enderror" required value="{{old('')}}">
+                                        </select>
+                                        <div id="loadingSpinner" style="display: none;">
+                                            <i class="fas fa-spinner fa-spin"></i>
+                                        </div>
+                                        @if ($errors->has('sub_category_id'))
+                                            <span class="error text-danger ms-5">{{ $errors->first('sub_category_id') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div> --}}
+                            <div class="col-md-12 my-2">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label" for="address">
+                                        <h5>Product<span class="text-danger">*</span></h5>
+                                    </label>
+                                    <div class="user-icon">
+                                        <select name="product_id" class="form-control @error('product_id') is-invalid border border-danger @enderror" id="">
+                                            <option selected disabled>Select Product </option>
+                                            @forelse ($product as $item)
+                                                <option value="{{$item->id}}">{{$item->name}}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        @if ($errors->has('product_id'))
+                                            <span class="error text-danger ms-5">{{ $errors->first('product_id') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
                             @php
                                 $date = date('Y-m-d');
                             @endphp
                             <div class="col-md-4 my-2 ">
                                 <div class="input-block mb-3">
                                     <label class="col-form-label" for="next_contact_date">
-                                        <h5>Next Contact Date<span class="text-danger"></span></h5>
+                                        <h5>Next Contact Date<span class="text-danger">*</span></h5>
                                     </label>
                                     <div class="user-icon">
                                         <input type="date" name="next_contact_date" id="next_contact_date" value="{{$date}}"
@@ -208,10 +272,10 @@
                             <div class="col-md-12 my-2">
                                 <div class="input-block mb-3">
                                     <label class="col-form-label" for="note">
-                                        <h5>Note <span class="text-danger">*</span></h5>
+                                        <h5>Note <span class="text-danger"></span></h5>
                                     </label>
                                     <div class="user-icon">
-                                        <textarea name="note" id="" placeholder="Write here Company Full address"
+                                        <textarea name="note" id="" placeholder="Write here note about this Lead"
                                             class="form-control @error('note') is-invalid border border-danger @enderror" cols="5"
                                             rows="3">{{ old('note') }}</textarea>
                                         @if ($errors->has('note'))
@@ -245,7 +309,33 @@
                 $('button[type="submit"]').prop('disabled', invalidFields.length > 0);
             });
         });
+        // ======
+        function fetchSubCatInfo() {
+            let catId = $('#catId').val();
+            if (catId) {
+                $('#loadingSpinner').show();
+                $.ajax({
+                    url: '{{ route('fetch.sub-cat') }}?catId=' + catId,
+                    type: 'GET',
+                    success: function(res) {
+                        $('#loadingSpinner').hide();
+                        $('#subCategoryId').empty();
+                        $('#subCategoryId').append('<option disabled selected>Select Sub-category</option>');
+                        $.each(res, function(key, value) {
+                            $('#subCategoryId').append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        }
+        $('#catId').on('change', function() {
+            fetchSubCatInfo();
+        });
     </script>
+
 
 
 @endsection

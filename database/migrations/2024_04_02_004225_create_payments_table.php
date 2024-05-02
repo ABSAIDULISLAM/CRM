@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('inv_id');
-            $table->integer('date');
+            $table->date('date');
             $table->integer('paid_amount');
             $table->enum('payment_status',[Status::Paid->value, Status::Unpaid->value, Status::Partial->value])->nullable();
             $table->timestamps();

@@ -27,7 +27,7 @@
 
         </div>
     </div>
-
+    @includeIf('errors.error')
     <div class="row">
         <div class="col-sm-12">
             <form method="POST" action="{{ route('Invoice.store') }}" enctype="multipart/form-data">
@@ -215,7 +215,7 @@
                                         <tr>
                                             <td colspan="5" class="text-end">Discount</td>
                                             <td class="text-end pe-4">
-                                                <input name="discount"
+                                                <input name="discount" value="0"
                                                     class="form-control text-end discount @error('discount') is-invalid border border-danger @enderror"
                                                     type="number">
                                             </td>

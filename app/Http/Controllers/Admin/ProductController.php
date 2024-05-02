@@ -172,4 +172,31 @@ class ProductController extends Controller
         return view('admin.product.view',compact('product'));
     }
 
+
+    public function Search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $products = Product::where(function ($q) use ($query) {
+                $q->whereHas('category', function ($category) use ($query) {
+                    $category->where('name', 'like', "%$query%");
+                })
+                ->orWhereHas('subcategory', function ($subcategory) use ($query) {
+                    $subcategory->where('name', 'like', "%$query%");
+                });
+            })
+            ->orWhere('name', 'like', "%$query%")
+            ->orWhere('slug', 'like', "%$query%")
+            ->orWhere('price', 'like', "%$query%")
+            ->orWhere('status', 'like', "%$query%")
+            ->orWhere('created_at', 'like', "%$query%")
+            ->with(['category', 'subcategory'])
+            ->paginate(10);
+
+        $html = view('admin.Product.search', compact('products'))->render();
+
+        return response()->json(['html' => $html]);
+    }
+
+
 }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class TeamLeaderMiddleware
+class OfficeStuffMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,14 +17,14 @@ class TeamLeaderMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            if (auth()->user()->role_as == 'teamleader') {
+            if (auth()->user()->role_as == 'office_staff') {
                 if (auth()->user()->status == 'active') {
                     return $next($request);
                 }else{
-                    return redirect()->back()->with('error', 'Account is not active');
+                    return redirect()->back()->with('error', 'Account is not active. Contact With Admin To Active Your Account');
                 }
             } else {
-                return redirect()->back()->with('error', 'Access Denied.! As you are not an Sub-admin');
+                return redirect()->back()->with('error', 'Access Denied.! As you are not Office Stuff');
             }
         } else {
             return redirect()->back()->with('error', 'Please Login First.');

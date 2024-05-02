@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('mobile');
             $table->string('email')->nullable();
             $table->string('address')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('sub_category_id')->nullable();
+            $table->unsignedBigInteger('product_id')->nullable();
             $table->enum('priority',[Status::High->value, Status::Medium->value,Status::Low->value])->nullable();
             $table->enum('status',[Status::Active->value, Status::Closed->value])->nullable();
             $table->text('image')->nullable();

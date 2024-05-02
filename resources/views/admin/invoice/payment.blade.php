@@ -79,7 +79,7 @@
                                 <h5>Paid Date<span class="text-danger">*</span></h5>
                             </label>
                             <div class="user-icon">
-                                <input type="date" name="date" id="date" placeholder="Lead Owner Id"
+                                <input type="date" name="date" id="date"
                                     value="{{$date}}"
                                     class="form-control @error('date') is-invalid border border-danger @enderror"
                                     required>

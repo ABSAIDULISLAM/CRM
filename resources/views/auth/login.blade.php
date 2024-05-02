@@ -32,7 +32,7 @@
 
     <div class="main-wrapper">
         <div class="account-content">
-            <a href="job-list.html" class="btn btn-primary apply-btn">Apply Job</a>
+            {{-- <a href="job-list.html" class="btn btn-primary apply-btn">Apply Job</a> --}}
             <div class="container">
 
                 <div class="account-logo">
@@ -46,17 +46,7 @@
 
                         <form method="POST" action="{{route('login.store')}}">
                             @csrf
-                            @if ($errors->any())
-                                <div class="">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            @php
-                                                toastr()->error($error);
-                                            @endphp
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
+                            @includeIf('errors.error')
 
                             <div class="input-block mb-4">
                                 <label class="col-form-label">Email Address</label>

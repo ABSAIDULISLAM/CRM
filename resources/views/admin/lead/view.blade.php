@@ -102,7 +102,6 @@
                                     aria-expanded="false"><span><i
                                             class="fa-solid fa-circle me-1 text-danger circle"></i>{{ $data->priority }}</span><i
                                         class="las la-angle-down ms-1"></i></a>
-
                             </div>
                         </li>
                     </ul>
@@ -120,21 +119,42 @@
                             </div>
                         </li>
                     </ul>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                        <h5>Contact Number</h5>
+                    </div>
+                    <ul class="deals-info">
+                        <li>
+
+                            <div>
+                                <a href="">{{ $data->mobile }}</a>
+                            </div>
+                        </li>
+                    </ul>
                     <ul class="other-info">
                         <li><span class="other-title">Last
-                                Modified</span><span>{{ $data->updated_at->format('Y-m-d') }}</span></li>
+                            Modified</span><span>{{ $data->updated_at->format('Y-m-d') }}</span>
+                        </li>
                     </ul>
                 </div>
             </div>
 
             <div class="col-xl-9">
-                <div class="contact-tab-wrap">
+                <div class="contact-tab-wrap d-flex justify-content-between">
                     <ul class="contact-nav nav">
                         <li>
-                            <a href="#" data-bs-toggle="tab" data-bs-target="#activities" class="active"><i
-                                    class="las la-user-clock"></i>Contact Record</a>
+                            <a href="#" onclick="contactModal({{$data->id}})" class="active"><i
+                                    class="fa-regular fa-add m-r-5"></i>Contact Record</a>
+                        </li>
+                        <li>
+                            <a href="{{route('Lead.edit',['id' => Crypt::encrypt($data->id)]) }}" class="active"><i
+                                    class="las la-user-clock"></i>Edit Lead</a>
+                        </li>
+                        <li>
+                            <a href="{{route('Lead.convert.client',['id' => Crypt::encrypt($data->id)]) }}" onclick="return confirm('Are you sure to convert this Lead into Client ??')" class="active"><i
+                                    class="las la-user-clock"></i>Convert To Client</a>
                         </li>
                     </ul>
+
                 </div>
 
                 <div class="contact-tab-view">
@@ -145,29 +165,27 @@
                             <div class="table-responsive">
                                 <table class="table table-border table-hover table-stripted">
                                     <thead>
-                                        <th>#</th>
-                                        <th>Next Contact Date</th>
-                                        <th>Note</th>
-                                        <th>Contact Date</th>
+                                        <th scope="col" class="col-md-1">#</th>
+                                        <th scope="col" class="col-md-2">Next Contact Date</th>
+                                        <th scope="col" class="col-md-1">Priority</th>
+                                        <th scope="col" class="col-md-6">Note</th>
+                                        <th scope="col" class="col-md-2">Contact Date</th>
                                     </thead>
                                     <tbody>
                                         @forelse ($lastInfo as $item)
                                         <tr>
                                             <td>{{ $loop->index+1}}</td>
-                                            <td>{{ \Carbon\Carbon::parse($item->next_contact_date)->formatLocalized('%d %B %Y') }}
+                                            <td>{{ \Carbon\Carbon::parse($item->next_contact_date)->isoFormat('DD MMM YYYY') }}
+                                            <td>{{ $item->priority ?? 'null'}}</td>
                                             <td>{{ $item->note ?? 'null'}}</td>
-                                            <td>{{ $item->created_at->formatLocalized('%d %B %Y') }}</td>
+                                            <td>{{ $item->created_at->format('Y-m-d') }}</td>
                                         </tr>
                                         @empty
                                         @endforelse
-
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>
-
-
                     </div>
                 </div>
 
@@ -177,7 +195,7 @@
     </div>
 
 
-    <div class="modal custom-modal fade modal-padding" id="add_notes" role="dialog">
+    {{-- <div class="modal custom-modal fade modal-padding" id="add_notes" role="dialog">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header header-border align-items-center justify-content-between p-0">
@@ -236,10 +254,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 
-    <div class="modal custom-modal fade modal-padding" id="create_call" role="dialog">
+    {{-- <div class="modal custom-modal fade modal-padding" id="create_call" role="dialog">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header header-border align-items-center justify-content-between p-0">
@@ -291,9 +309,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
-
+    {{-- @includeIf('admin.lead.partial.contact-record-result') --}}
+    @includeIf('admin.lead.partial.next-contact-date')
     @push('js')
         <script src="{{asset('backend/assets/js/jquery.dataTables.min.js')}}" type="text/javascript"></script>
         <script src="{{asset('backend/assets/js/dataTables.bootstrap4.min.js')}}" type="text/javascript"></script>
@@ -312,5 +331,11 @@
             type="text/javascript"></script>
 
     @endpush
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function contactModal(id){
+            $('#NextContactDate').modal('show');
+            $('#NextContactDate').find('input[name="id"]').val(id);
+        }
+    </script>
 @endsection

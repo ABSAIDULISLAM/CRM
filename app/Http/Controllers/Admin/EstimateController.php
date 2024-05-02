@@ -45,7 +45,7 @@ class EstimateController extends Controller
             'grand_total' => ['required', 'numeric'],
             'other_info' => ['nullable', 'max:1024'],
             'renewType' => ['required'],
-            'service_fee' => ['required'],
+            'service_fee' => ['required','numeric','min:0','max:999999.99'],
             'product_id*' => ['required', 'exists:products,id'],
             'desc*' => ['nullable', 'max:256'],
             'price*' => ['required', 'numeric'],
@@ -67,6 +67,7 @@ class EstimateController extends Controller
        $invSummary->renewType = $request->renewType;
        $invSummary->service_fee = $request->service_fee;
        $invSummary->status = Status::Estimate;
+       $invSummary->payment_status = Status::Unpaid;
        $invSummary->creator = auth()->user()->id;
        $invSummary->save();
 
@@ -173,7 +174,7 @@ class EstimateController extends Controller
         $lead = Lead::find($invsummery->lead_id);
 
         $client = new Client();
-        $client->name = $lead->name;
+        $client->name = $lead->company_name;
         $client->email = $lead->email;
         $client->mobile = $lead->mobile;
         $client->status = Status::Active;
@@ -188,11 +189,34 @@ class EstimateController extends Controller
         $lead->delete();
 
         $invsummery->update([
-            'status' => Status::Invoice->value,
-            'status' => Status::Invoice->value,
+            'lead_id' => null,
+            'client_id' => $client->id,
             'status' => Status::Invoice->value,
         ]);
-        return redirect()->route('Estimate.index')->with('success', 'Estimate Converted Into Invoice Successfully');
+        return redirect()->route('Invoice.index')->with('success', 'Estimate Converted Into Invoice Successfully');
+    }
+
+
+    public function Search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $data = InvoiceSummary::where(function ($q) use ($query) {
+            $q->whereHas('lead', function ($lead) use ($query) {
+                $lead->where('name', 'like', "%$query%");
+            })
+                ->orWhere('inv_id', 'like', "%$query%")
+                ->orWhere('estimate_date', 'like', "%$query%")
+                ->orWhere('payment_status', 'like', "%$query%")
+                ->orWhere('status', 'like', "%$query%")
+                ->orWhere('renewType', 'like', "%$query%");
+        })
+            ->with(['invdetails','lead','creator'])
+            ->paginate(10);
+
+        $html = view('admin.Estimate.search', compact('data'))->render();
+
+        return response()->json(['html' => $html]);
     }
 
 

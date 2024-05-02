@@ -44,10 +44,11 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request)
     {
+        return $request->all();
         $request->validate([
-            'name' => ['required', 'string', 'max:255', 'regex:/\+?(88)?0?1[3456789][0-9]{8}\b/'],
+            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
-            'number' => ['required', 'number', 'max:11', 'min:11', 'unique:users,number'],
+            'number' => ['required', 'number', 'max:11', 'min:11', 'unique:users,number', 'regex:/\+?(88)?0?1[3456789][0-9]{8}\b/'],
             'password' => ['required', 'min:8', 'confirmed', Password::defaults()],
         ]);
 
@@ -62,18 +63,15 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // $userdata = [
-        //     'name' => $request->name,
-        //     'email' => $request->email,
-        //     'password' => $request->password,
-        // ];
-
-        // Mail::send('backend.admin.emails.welcome', ['user' => $userdata], function ($message) use ($userdata) {
-        //     $message->to($userdata['email']);
-        //     $message->subject('Welcome Mail from Touch and Earn');
-        // });
-
-        return redirect(RouteServiceProvider::HOME);
+        if ($user->role_as === 'admin') {
+            return redirect()->intended(RouteServiceProvider::ADMIN_HOME)->with('success', 'Welcome, ' . $user->name . '!');
+        } elseif($user->role_as === 'office_staff') {
+            return redirect()->intended(RouteServiceProvider::OFFICE_STAFF_HOME)->with('success', 'Welcome, ' . $user->name . '!');
+        } elseif ($user->role_as === 'marketing_staff') {
+            return redirect()->intended(RouteServiceProvider::MARKETING_STAFF_HOME)->with('success', 'Welcome, ' . $user->name . '!');
+        } else {
+            return redirect()->intended(RouteServiceProvider::USER_HOME)->with('success', 'Welcome, ' . $user->name . '!');
+        }
     }
 
 }

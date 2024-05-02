@@ -46,7 +46,7 @@ class InvoiceController extends Controller
             'grand_total' => ['required', 'numeric'],
             'other_info' => ['nullable', 'max:1024'],
             'renewType' => ['required'],
-            'service_fee' => ['required'],
+            'service_fee' => ['required','numeric','min:0','max:999999.99'],
             'product_id*' => ['required', 'exists:products,id'],
             'desc*' => ['nullable', 'max:256'],
             'price*' => ['required', 'numeric'],
@@ -210,25 +210,49 @@ class InvoiceController extends Controller
         return redirect()->route('Invoice.index')->with('success', 'Invoice Payment Collected Successful');
     }
 
-
     public function renewalList()
     {
         $data = InvoiceSummary::where('status', 'invoice')
-        ->where(function ($query) {
-            $query->where('renewType', 'monthly')
-                ->whereDate('created_at', '<=', Carbon::now()->subDays(23))
-                ->whereDate('created_at', '>=', Carbon::now()->subDays(30));
+            ->where(function ($query) {
+                $query->where(function ($query) {
+                    $query->where('renewType', 'monthly')
+                        ->whereDate('created_at', '<=', Carbon::now()->subDays(23))
+                        ->whereDate('created_at', '>=', Carbon::now()->subDays(30));
+                })
+                ->orWhere(function ($query) {
+                    $query->where('renewType', 'yearly')
+                        ->whereDate('created_at', '<=', Carbon::now()->subMonths(11))
+                        ->whereDate('created_at', '>=', Carbon::now()->subMonths(12));
+                });
+            })
+            // ->whereIn('payment_status', ['unpaid', 'partial'])
+            ->with(['invdetails', 'client', 'creator'])
+            ->latest()
+            ->get();
 
-            $query->orWhere(function ($query) {
-                $query->where('renewType', 'yearly')
-                    ->whereDate('created_at', '<=', Carbon::now()->subMonths(11))
-                    ->whereDate('created_at', '>=', Carbon::now()->subMonths(12));
-            });
-        })
-        ->with(['invdetails', 'client', 'creator'])
-        ->latest()
-        ->get();
-        // return $data;
         return view('admin.invoice.renewal-list', compact('data'));
     }
+
+    public function Search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $data = InvoiceSummary::where('status', 'invoice')
+                    ->where(function ($q) use ($query) {
+                        $q->whereHas('client', function ($clientQuery) use ($query) {
+                            $clientQuery->where('name', 'like', "%$query%");
+                        })
+                        ->orWhere('inv_id', 'like', "%$query%")
+                        ->orWhere('payment_status', 'like', "%$query%")
+                        ->orWhere('payment_status', 'like', "%$query%");
+                    })
+                    ->with(['invdetails', 'client', 'creator'])
+                    ->paginate(10);
+
+        $html = view('admin.invoice.search', compact('data'))->render();
+
+        return response()->json(['html' => $html]);
+    }
+
+
 }

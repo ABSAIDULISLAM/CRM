@@ -17,15 +17,15 @@
                 <div class="col">
                     <h3 class="page-title">Estimate</h3>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('Estimate.index')}}" class="text-success"><i class="fas fa-arrow-left"></i> Back</a>
                         </li>
                         <li class="breadcrumb-item active">Estimate</li>
                     </ul>
                 </div>
                 <div class="col-auto float-end ms-auto">
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-white">CSV</button>
-                        <button class="btn btn-white">PDF</button>
+                        {{-- <button class="btn btn-white">CSV</button>
+                        <button class="btn btn-white">PDF</button> --}}
                         <button  onclick="window.print();" class="btn btn-white"><i class="fa-solid fa-print fa-lg"></i>
                             Print</button>
                     </div>
@@ -48,17 +48,18 @@
                             </div>
                             <div class="col-sm-6 m-b-20">
                                 <div class="invoice-details">
-                                    <h3 class="text-uppercase">Invoice #INV-{{$data->inv_id}}</h3>
+                                    <h3 class="text-uppercase">Invoice #INV-{{$data->inv_id}} </h3>
                                     <ul class="list-unstyled">
                                         <li>Print Date: <span>{{ \Carbon\Carbon::now()->format('d-m-y') }}</span></li>
                                         <li>Due date: <span>{{ \Carbon\Carbon::parse($data->expiry_date)->format('d-m-y') }}</span></li>
 
-                                        <hr style="color: #bdbdbd;padding:2px; margin:2px">
-                                        <h5>Invoice to:</h5>
+                                        <hr style="color: #cfcfcf;padding:2px; margin:2px">
+                                        <h6> Status : <span class="text-primary" style="font-size: 15px;">Estimate</span></h6>
+                                        <hr style="color: #cfcfcf;padding:2px; margin:2px">
+                                        {{-- <h5>Invoice to:</h5> --}}
                                         <li>
-                                            <h5><strong>{{$data->lead->name}}</strong></h5>
+                                            <h5>Invoice to: <strong>{{$data->lead->name}}</strong></h5>
                                         </li>
-                                        <li><span>{{$data->lead->company_address}}</span></li>
                                         <li>{{$data->lead->address}}</li>
                                         <li>{{$data->lead->mobile}}</li>
                                         <li>{{$data->lead->email}}</li>
@@ -107,11 +108,11 @@
                                                         <th>Subtotal:</th>
                                                         <td class="text-end">{{$data->subTotal}}/-</td>
                                                     </tr>
-                                                    <tr>
+                                                    {{-- <tr>
                                                         <th>Renew / Service Charge: <span class="text-regular"></span>
                                                         </th>
                                                         <td class="text-end">{{$data->service_fee}}/- {{$data->renewType}} </td>
-                                                    </tr>
+                                                    </tr> --}}
                                                     <tr>
                                                         <th>Discount: <span class="text-regular"></span>
                                                         </th>
@@ -129,7 +130,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="invoice-info">
+                            <div class="row my-3">
+                                <div class="col-md-12">
+                                    <tr>
+                                        <th><span class="h6">Renew / Service Charge:</span> <span class="text-regular"></span>
+                                        </th>
+                                        <td class="text-end"><span class="h5">{{$data->service_fee}}/- {{$data->renewType}}</span> </td>
+                                    </tr>
+                                </div>
+                            </div>
+                            <div class="invoice-info my-2">
                                 <h5>Other information</h5>
                                 <p style="border: 1px solid #d1d0d0; padding: 5px;" class="text-muted">{{$data->other_info}} </p>
                             </div>

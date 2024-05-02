@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\Account\MarketingStuffController;
+use App\Http\Controllers\Admin\Account\OfficeStuffController;
+use App\Http\Controllers\Admin\Account\UserController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -43,6 +46,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('delete/{id}', 'delete')->name('delete');
             Route::get('view/{id}', 'view')->name('view');
             Route::get('status/{id}', 'status')->name('status');
+            Route::get('search', 'Search')->name('search');
         });
 
     Route::controller(CategoryController::class)
@@ -75,6 +79,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('view/{id}', 'view')->name('view');
             Route::get('delete/{id}', 'delete')->name('delete');
             Route::get('convert-invoice/{id}', 'convertInvoice')->name('convert.invoice');
+            Route::get('search', 'Search')->name('search');
         });
 
     Route::controller(SalesController::class)
@@ -103,8 +108,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::post('payment-store', 'paymentStore')->name('payment-store');
 
             Route::get('renewal-list', 'renewalList')->name('renewal.list');
-
-
+            Route::get('search', 'Search')->name('search');
         });
 
 
@@ -127,6 +131,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('convert-client/{id}', 'convertClient')->name('convert.client');
             Route::post('contact-record-store', 'ContactRecordstore')->name('contact.record.store');
             Route::post('contact-date-store', 'Contactdatestore')->name('contact.date.store');
+            Route::get('search', 'Search')->name('search');
         });
 
     Route::controller(ClientController::class)
@@ -139,6 +144,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('status-update/{id}', 'statusUpdate')->name('status.update');
             Route::get('delete/{id}', 'delete')->name('delete');
             Route::get('view/{id}', 'view')->name('view');
+            Route::get('search', 'Search')->name('search');
         });
 
     Route::controller(LeadOwnerController::class)
@@ -166,4 +172,45 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('other', 'other')->name('other');
         });
 
+
+    Route::controller(UserController::class)
+        ->prefix('account/user')->as('Account.user.')->group(function () {
+            Route::get('index', 'index')->name('index');
+            Route::get('create', 'create')->name('create');
+            Route::post('store', 'store')->name('store');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::post('update', 'update')->name('update');
+            Route::get('delete/{id}', 'delete')->name('delete');
+            Route::get('view/{id}', 'view')->name('view');
+
+        });
+
+    Route::controller(MarketingStuffController::class)
+        ->prefix('account/marketing')->as('Account.marketing.')->group(function () {
+            Route::get('index', 'index')->name('index');
+            Route::get('create', 'create')->name('create');
+            Route::post('store', 'store')->name('store');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::post('update', 'update')->name('update');
+            Route::get('delete/{id}', 'delete')->name('delete');
+            Route::get('view/{id}', 'view')->name('view');
+
+        });
+
+    Route::controller(OfficeStuffController::class)
+        ->prefix('account/office')->as('Account.office.')->group(function () {
+            Route::get('index', 'index')->name('index');
+            Route::get('create', 'create')->name('create');
+            Route::post('store', 'store')->name('store');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::post('update', 'update')->name('update');
+            Route::get('delete/{id}', 'delete')->name('delete');
+            Route::get('view/{id}', 'view')->name('view');
+
+        });
+
+
 });
+
+
+

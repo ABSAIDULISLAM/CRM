@@ -9,37 +9,29 @@
                       </button>
                 </div>
                 <div class="modal-body p-0">
-                    <form action="{{route('Lead.contact.record.store')}}" method="POST">
-                        @csrf
-                        @if ($errors->any())
-                            <div class="">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        @php
-                                            toastr()->error($error);
-                                        @endphp
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-                            <div class="row">
-                                  <div class="col-md-12 my-2">
-                                        <div class="input-block mb-3">
-                                            <input type="hidden" name="id" value="{{$item->id}}">
-                                              <label class="col-form-label"><h5>Contact Record <span
-                                                class="text-danger">*</span></h5></label>
-                                              <div class="user-icon">
-                                                    <textarea name="note" id="" class="form-control" cols="5" rows="3" placeholder="Enter Here Contact Record Note About This Lead"></textarea>
-                                              </div>
-                                        </div>
-                                  </div>
-                                  <div class="col-lg-12 text-end form-wizard-button">
-                                        <button class="button btn-lights reset-btn" type="reset"
-                                              data-bs-dismiss="modal">Reset</button>
-                                        <button class="btn btn-primary" type="submit">Submit</button>
-                                  </div>
-                            </div>
-                    </form>
+                    @if(isset($item))
+                        <form action="{{route('Lead.contact.record.store')}}" method="POST">
+                            @csrf
+                            @includeIf('errors.error')
+                                <div class="row">
+                                    <div class="col-md-12 my-2">
+                                            <div class="input-block mb-3">
+                                                <input type="hidden" name="id" value="{{$item->id}}">
+                                                <label class="col-form-label"><h5>Contact Record <span
+                                                    class="text-danger">*</span></h5></label>
+                                                <div class="user-icon">
+                                                        <textarea name="note" id="" class="form-control" cols="5" rows="3" placeholder="Enter Here Contact Record Note About This Lead"></textarea>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="col-lg-12 text-end form-wizard-button">
+                                            <button class="button btn-lights reset-btn" type="reset"
+                                                data-bs-dismiss="modal">Reset</button>
+                                            <button class="btn btn-primary" type="submit">Submit</button>
+                                    </div>
+                                </div>
+                        </form>
+                    @endif
                 </div>
           </div>
     </div>

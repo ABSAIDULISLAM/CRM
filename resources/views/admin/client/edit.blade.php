@@ -122,6 +122,13 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-12">
+                                <div class="card-header p-2" style="background-color: rgb(241, 218, 218)">
+                                    <h5>Product Details</h5>
+                                </div>
+                            </div>
+
                             <div class="col-md-4">
                                 <div class="input-block mb-3">
                                     <h5 class="mb-3">Status</h5>
@@ -158,7 +165,6 @@
 
 
     @push('js')
-        {{-- <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script> --}}
 
         <script src="{{ asset('backend/assets/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('backend/assets/js/dataTables.bootstrap4.min.js') }}" type="text/javascript"></script>
@@ -170,8 +176,7 @@
         <script src="{{ asset('backend/assets/js/select2.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('backend/assets/js/theme-settings.js') }}" type="text/javascript"></script>
         <script src="{{ asset('backend/assets/js/greedynav.js') }}" type="text/javascript"></script>
-        {{-- <script src="../../cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js"
-    data-cf-settings="" defer></script> --}}
+
     @endpush
 
 @endsection
