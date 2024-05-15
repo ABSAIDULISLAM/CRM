@@ -2,8 +2,6 @@
 <html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg"
     data-sidebar-image="none">
 
-<!-- Mirrored from smarthr.dreamstechnologies.com/html/template/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 13 Mar 2024 20:03:26 GMT -->
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +11,7 @@
     <meta name="author" content="Dreamstechnologies - Bootstrap Admin Template">
     <title>Login - CRM</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{asset('backend/assets/img/favicon.png')}}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('backend/logo.jpeg')}}">
 
     <link rel="stylesheet" href="{{asset('backend/assets/css/bootstrap.min.css')}}">
 
@@ -28,15 +26,19 @@
     <link rel="stylesheet" href="{{asset('backend/assets/css/style.css')}}">
 </head>
 
-<body class="account-page">
+<body class="account-page" id="bg" style="background-image: url('{{ asset('backend/login-bg.jpeg') }}'); background-repeat: no-repeat; background-size: cover;">
 
     <div class="main-wrapper">
         <div class="account-content">
             {{-- <a href="job-list.html" class="btn btn-primary apply-btn">Apply Job</a> --}}
             <div class="container">
 
-                <div class="account-logo">
-                    <a href="{{route('index')}}"><img src="{{asset('backend/assets/img/logo2.png')}}" alt="Dreamguy's Technologies"></a>
+                <div class="accoun-logo text-center mb-3">
+                    <a href="{{route('index')}}" class="text-center">
+                        <div class="logo-container" style="box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.938);">
+                            <img src="{{ asset('backend/logo.png') }}" class="text-center" height="250px" width="300px" alt="CRM-TIZARA">
+                        </div>
+                    </a>
                 </div>
 
                 <div class="account-box">
@@ -75,7 +77,7 @@
                                 <button class="btn btn-primary account-btn" type="submit">Login</button>
                             </div>
                             <div class="account-footer">
-                                <p>Don't have an account yet? <a href="{{route('register')}}">Register</a></p>
+                                {{-- <p>Don't have an account yet? <a href="{{route('register')}}">Register</a></p> --}}
                             </div>
                         </form>
 

@@ -39,14 +39,12 @@
                             <a class="nav-link" data-bs-toggle="tab" href="#paid">Paid</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#pending">Pending</a>
+                            <a class="nav-link" data-bs-toggle="tab" href="#pending">Partial</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="cancelled">Cancelled</a>
+                            <a class="nav-link" data-bs-toggle="tab" href="#unpaid">Unpaid</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="refunded">Refunded</a>
-                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -61,17 +59,27 @@
                         <table class="table table-hover table-radius">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Category</th>
-                                    <th>Default/Unit Amount</th>
-                                    <th class="text-end">Action</th>
+                                    <th>Client Name</th>
+                                    <th>Invoice ID</th>
+                                    <th>Payment Date</th>
+                                    <th class="">Paid Amount</th>
+                                    <th class="">Created date</th>
+                                    <th class="">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @forelse ($data as $item)
+                                @if ($item->invoice && $item->invoice->client)
                                 <tr>
-                                    <th>Leave balance amount</th>
-                                    <td>Monthly remuneration</td>
-                                    <td>$5</td>
+                                    <th>{{$item->invoice->client->name}}</th>
+                                    <td>
+                                        <a href="{{ route('Payment.view', ['inv' => Crypt::encrypt($item->inv_id), 'id' => Crypt::encrypt($item->id)]) }}"
+                                            class="text-success">{{ $item->inv_id }}
+                                        </a>
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($item->date)->isoFormat('DD MMM YYYY') }}</td>
+                                    <td>{{$item->paid_amount}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->created_at)->isoFormat('DD MMM YYYY') }}</td>
                                     <td class="text-end">
                                         <div class="dropdown dropdown-action">
                                             <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
@@ -87,46 +95,12 @@
                                         </div>
                                     </td>
                                 </tr>
+                                @endif
+                                @empty
                                 <tr>
-                                    <th>Arrears of salary</th>
-                                    <td>Additional remuneration</td>
-                                    <td>$8</td>
-                                    <td class="text-end">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                                aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#edit_addition"><i class="fa-solid fa-pencil m-r-5"></i>
-                                                    Edit</a>
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#delete_addition"><i
-                                                        class="fa-regular fa-trash-can m-r-5"></i>
-                                                    Delete</a>
-                                            </div>
-                                        </div>
-                                    </td>
+                                    <td colspan="6" class="text-center">No Recoed Found</td>
                                 </tr>
-                                <tr>
-                                    <th>Gratuity</th>
-                                    <td>Monthly remuneration</td>
-                                    <td>$20</td>
-                                    <td class="text-end">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                                aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#edit_addition"><i class="fa-solid fa-pencil m-r-5"></i>
-                                                    Edit</a>
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#delete_addition"><i
-                                                        class="fa-regular fa-trash-can m-r-5"></i>
-                                                    Delete</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -140,33 +114,44 @@
                         <table class="table table-hover table-radius">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Rate</th>
-                                    <th class="text-end">Action</th>
+                                    <th>Client Name</th>
+                                    <th>Invoice ID</th>
+                                    <th>Payment Date</th>
+                                    <th class="">Paid Amount</th>
+                                    <th class="">Created date</th>
+                                    <th class="">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @forelse ($data->where('payment_status', 'paid') as $item)
+                                @if ($item->invoice && $item->invoice->client)
                                 <tr>
-                                    <th>Public holiday OT 3.0x</th>
-                                    <td>Hourly 3</td>
+                                    <th>{{$item->invoice->client->name}}</th>
+                                    <td>{{$item->inv_id}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->date)->isoFormat('DD MMM YYYY') }}</td>
+                                    <td>{{$item->paid_amount}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->created_at)->isoFormat('DD MMM YYYY') }}</td>
                                     <td class="text-end">
                                         <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle"
-                                                data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                    class="material-icons">more_vert</i></a>
+                                            <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
+                                                aria-expanded="false"><i class="material-icons">more_vert</i></a>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#edit_overtime"><i
-                                                        class="fa-solid fa-pencil m-r-5"></i>
+                                                <a class="dropdown-item" href="{{route('Payment.edit')}}"><i class="fa-solid fa-pencil m-r-5"></i>
                                                     Edit</a>
                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#delete_overtime"><i
+                                                    data-bs-target="#delete_addition"><i
                                                         class="fa-regular fa-trash-can m-r-5"></i>
                                                     Delete</a>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
+                                @endif
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="text-center">No Recoed Found</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -180,123 +165,99 @@
                         <table class="table table-hover table-radius">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Default/Unit Amount</th>
-                                    <th class="text-end">Action</th>
+                                    <th>Client Name</th>
+                                    <th>Invoice ID</th>
+                                    <th>Payment Date</th>
+                                    <th class="">Paid Amount</th>
+                                    <th class="">Created date</th>
+                                    <th class="">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @forelse ($data->where('payment_status', 'partial') as $item)
+                                @if ($item->invoice && $item->invoice->client)
                                 <tr>
-                                    <th>Unpaid leave</th>
-                                    <td>$3</td>
+                                    <th>{{$item->invoice->client->name}}</th>
+                                    <td>{{$item->inv_id}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->date)->isoFormat('DD MMM YYYY') }}</td>
+                                    <td>{{$item->paid_amount}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->created_at)->isoFormat('DD MMM YYYY') }}</td>
                                     <td class="text-end">
                                         <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle"
-                                                data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                    class="material-icons">more_vert</i></a>
+                                            <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
+                                                aria-expanded="false"><i class="material-icons">more_vert</i></a>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#edit_deduction"><i
-                                                        class="fa-solid fa-pencil m-r-5"></i>
+                                                <a class="dropdown-item" href="{{route('Payment.edit')}}"><i class="fa-solid fa-pencil m-r-5"></i>
                                                     Edit</a>
                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#delete_deduction"><i
+                                                    data-bs-target="#delete_addition"><i
                                                         class="fa-regular fa-trash-can m-r-5"></i>
                                                     Delete</a>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
+                                @endif
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="text-center">No Recoed Found</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-
-            <div class="tab-pane" id="cancelled">
+            <div class="tab-pane" id="unpaid">
                 <div class="payroll-table card">
                     <div class="table-responsive">
                         <table class="table table-hover table-radius">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Default/Unit Amount</th>
-                                    <th class="text-end">Action</th>
+                                    <th>Client Name</th>
+                                    <th>Invoice ID</th>
+                                    <th>Payment Date</th>
+                                    <th class="">Paid Amount</th>
+                                    <th class="">Created date</th>
+                                    <th class="">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @forelse ($data->where('payment_status', 'unpaid') as $item)
+                                @if ($item->invoice && $item->invoice->client)
                                 <tr>
-                                    <th>Unpaid leave</th>
-                                    <td>$3</td>
+                                    <th>{{$item->invoice->client->name}}</th>
+                                    <td>{{$item->inv_id}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->date)->isoFormat('DD MMM YYYY') }}</td>
+                                    <td>{{$item->paid_amount}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->created_at)->isoFormat('DD MMM YYYY') }}</td>
                                     <td class="text-end">
                                         <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle"
-                                                data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                    class="material-icons">more_vert</i></a>
+                                            <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
+                                                aria-expanded="false"><i class="material-icons">more_vert</i></a>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#edit_deduction"><i
-                                                        class="fa-solid fa-pencil m-r-5"></i>
+                                                <a class="dropdown-item" href="{{route('Payment.edit')}}"><i class="fa-solid fa-pencil m-r-5"></i>
                                                     Edit</a>
                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#delete_deduction"><i
+                                                    data-bs-target="#delete_addition"><i
                                                         class="fa-regular fa-trash-can m-r-5"></i>
                                                     Delete</a>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
+                                @endif
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="text-center">No Recoed Found</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <div class="tab-pane" id="refunded">
-                <div class="payroll-table card">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-radius">
-                            <thead>
-                                <tr>
-                                    <th>Sl.</th>
-                                    <th>Name</th>
-                                    <th>Default/Unit Amount</th>
-                                    <th class="text-end">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th>1</th>
-                                    <th>Unpaid leave</th>
-                                    <td class="text-end">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle"
-                                                data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                    class="material-icons">more_vert</i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="{{route('Payment.receive')}}"><i
-                                                        class="fa-solid fa-pencil m-r-5"></i>
-                                                    Receive Payment</a>
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#edit_deduction"><i
-                                                        class="fa-solid fa-pencil m-r-5"></i>
-                                                    Edit</a>
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#delete_deduction"><i
-                                                        class="fa-regular fa-trash-can m-r-5"></i>
-                                                    Delete</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>$3</td>
-
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 

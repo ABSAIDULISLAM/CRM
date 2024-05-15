@@ -16,6 +16,7 @@
                 <th>contact record</th>
                 <th>Product</th>
                 <th>Lead Status</th>
+                <th>Lead Region</th>
                 <th>Created Date</th>
                 <th>Lead Owner</th>
             </tr>
@@ -96,12 +97,13 @@
                         {{ $item->status }}
                     </a>
                 </td>
+                <td> {{$item->upazila->thana_name}}</td>
                 <td> {{$item->created_at->format('Y-m-d')}}</td>
                 <td> {{$item->user->name}}</td>
 
             </tr>
-            @includeIf('admin.lead.partial.delete')
-            @includeIf('admin.lead.partial.contact-record-result')
+            @includeIf('office-stuff.lead.partial.delete')
+            @includeIf('office-stuff.lead.partial.contact-record-result')
             @empty
             <tr><td colspan="12" class="text-center">No Data Found</td></tr>
             @endforelse

@@ -17,46 +17,54 @@
     <div class="row">
         <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
             <div class="card dash-widget">
-                <div class="card-body">
-                    <span class="dash-widget-icon"><i class="fa-solid fa-cubes"></i></span>
-                    <div class="dash-widget-info">
-                        <h3>112</h3>
-                        <span>Projects</span>
+                <a href="{{route('Client.index')}}">
+                    <div class="card-body">
+                        <span class="dash-widget-icon"><i class="fa-solid fa-cubes"></i></span>
+                        <div class="dash-widget-info">
+                            <h3>{{$totalClients}}</h3>
+                            <span>Clients</span>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
             <div class="card dash-widget">
-                <div class="card-body">
-                    <span class="dash-widget-icon"><i class="fa-solid fa-dollar-sign"></i></span>
-                    <div class="dash-widget-info">
-                        <h3>44</h3>
-                        <span>Clients</span>
+                <a href="{{route('Lead.index')}}">
+                    <div class="card-body">
+                        <span class="dash-widget-icon"><i class="fa-solid fa-dollar-sign"></i></span>
+                        <div class="dash-widget-info">
+                            <h3>{{$totalLeads}}</h3>
+                            <span>Leads</span>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
             <div class="card dash-widget">
-                <div class="card-body">
-                    <span class="dash-widget-icon"><i class="fa-regular fa-gem"></i></span>
-                    <div class="dash-widget-info">
-                        <h3>37</h3>
-                        <span>Tasks</span>
+                <a href="{{route('Lead-owner.index')}}">
+                    <div class="card-body">
+                        <span class="dash-widget-icon"><i class="fa-regular fa-gem"></i></span>
+                        <div class="dash-widget-info">
+                            <h3>{{$marketingOfficers}}</h3>
+                            <span>Marketing Stuff</span>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
             <div class="card dash-widget">
-                <div class="card-body">
-                    <span class="dash-widget-icon"><i class="fa-solid fa-user"></i></span>
-                    <div class="dash-widget-info">
-                        <h3>218</h3>
-                        <span>Employees</span>
+                <a href="{{route('Account.office.index')}}">
+                    <div class="card-body">
+                        <span class="dash-widget-icon"><i class="fa-solid fa-user"></i></span>
+                        <div class="dash-widget-info">
+                            <h3>{{$officeStuffs}}</h3>
+                            <span>Office Stuff</span>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
@@ -82,7 +90,8 @@
             </div>
         </div>
     </div>
-    <div class="row">
+
+    {{-- <div class="row">
         <div class="col-md-12">
             <div class="card-group m-b-30">
                 <div class="card">
@@ -895,7 +904,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 @endsection
 

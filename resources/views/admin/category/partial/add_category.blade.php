@@ -10,17 +10,7 @@
             <div class="modal-body p-0">
                 <form id="categoryForm" method="POST" action="{{route('Category.store')}}" enctype="multipart/form-data">
                     @csrf
-                    @if ($errors->any())
-                        <div class="">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    @php
-                                        toastr()->error($error);
-                                    @endphp
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                    @includeIf('errors.error')
                     <div class="row">
                         <div class="col-md-12 my-2">
                             <div class="input-block mb-3">

@@ -18,7 +18,7 @@
                 <div class="col-md-4">
                     <h3 class="page-title">Leads</h3>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('Marketing.dashboard')}}">Dashboard</a>
                         </li>
                         <li class="breadcrumb-item active">Leads</li>
                     </ul>
@@ -39,8 +39,6 @@
                 </div>
             </div>
         </div>
-
-
         <hr>
 
         <form id="searchForm" method="get">
@@ -79,6 +77,7 @@
                                 <th>contact record</th>
                                 <th>Product</th>
                                 <th>Lead Status</th>
+                                <th>Lead Region</th>
                                 <th>Created Date</th>
                                 <th>Lead Owner</th>
                             </tr>
@@ -101,7 +100,7 @@
                                                 Contact Record</a>
                                             <a class="dropdown-item" href="{{route('Marketing.lead.edit',['id' => Crypt::encrypt($item->id)]) }}"><i class="fa-solid fa-pencil m-r-5"></i>
                                                 Edit</a>
-                                            {{-- <a class="dropdown-item" href="{{route('Lead.view',['id' => Crypt::encrypt($item->id)]) }}"><i class="fa-regular fa-eye m-r-5"></i>
+                                            {{-- <a class="dropdown-item" href="{{route('Office.lead.view',['id' => Crypt::encrypt($item->id)]) }}"><i class="fa-regular fa-eye m-r-5"></i>
                                                 Preview</a> --}}
                                             <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                                 data-bs-target="#delete_company"><i
@@ -160,14 +159,15 @@
                                         {{ $item->status }}
                                     </a>
                                 </td>
+                                <td> {{$item->upazila->thana_name}}</td>
                                 <td> {{$item->created_at->format('Y-m-d')}}</td>
                                 <td> {{$item->user->name}}</td>
 
                             </tr>
-                            @includeIf('admin.lead.partial.delete')
-                            @includeIf('admin.lead.partial.contact-record-result')
+                            @includeIf('marketing-stuff.lead.partial.delete')
+                            @includeIf('marketing-stuff.lead.partial.contact-record-result')
                             @empty
-                            <tr><td colspan="12" class="text-center">No Data Found</td></tr>
+                            <tr><td colspan="14" class="text-center">No Data Found</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -177,9 +177,9 @@
     </div>
 
 
-    @includeIf('admin.lead.partial.add-lead')
-    @includeIf('admin.lead.partial.contact-record-result')
-    @includeIf('admin.lead.partial.next-contact-date')
+    @includeIf('marketing-stuff.lead.partial.add-lead')
+    @includeIf('marketing-stuff.lead.partial.contact-record-result')
+    @includeIf('marketing-stuff.lead.partial.next-contact-date')
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -204,6 +204,7 @@
                 url: "{{ route('Marketing.lead.search') }}",
                 method: 'get',
                 data: {
+                    _token: '{{ csrf_token() }}',
                     query: query
                 },
                 success: function(response){

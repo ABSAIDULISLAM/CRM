@@ -20,6 +20,9 @@
                 <li>
                     <a href="{{route('User.dashboard')}}"  class="{{ Request::is('user/dashboard') ? 'active' : ''}}"><i class="la la-chart-area"></i> <span> Dashboard </span></a>
                 </li>
+                <li>
+                    <a href="{{route('User.payment.history')}}"  class="{{ Request::is('user/payment/history') ? 'active' : ''}}"><i class="la la-money-bill-wave"></i> <span>Payment History</span></a>
+                </li>
 
             </ul>
         </div>

@@ -33,17 +33,7 @@
                 <div class="card-body">
                     <form action="{{ route('Product.store') }}" method="POST" enctype="multipart/form-data" id="productaddform">
                         @csrf
-                        @if ($errors->any())
-                                <div class="">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            @php
-                                                toastr()->error($error);
-                                            @endphp
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
+                        @includeIf('errors.error')
                         <div class="row">
                             <div class="col-md-12 my-2">
                                 <div class="input-block mb-3">

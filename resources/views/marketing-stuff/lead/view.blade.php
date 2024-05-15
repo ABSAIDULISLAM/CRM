@@ -20,7 +20,7 @@
                 <div class="col-md-4">
                     <h3 class="page-title">View Lead </h3>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('Marketing.dashboard')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('Office.dashboard')}}">Dashboard</a>
                         </li>
                         <li class="breadcrumb-item active">View Lead </li>
                     </ul>
@@ -28,7 +28,7 @@
                 <div class="col-md-8 float-end ms-auto">
 
                     <div class="d-flex title-head">
-                        <a href="{{ route('Marketing.lead.index') }}" class="btn btn-primary px-5">Back</a>
+                        <a href="{{ route('Office.lead.index') }}" class="btn btn-primary px-5">Back</a>
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                     <div class="row align-items-center">
                         <div class="col-sm-6">
                             <ul class="contact-breadcrumb">
-                                <li><a href="{{ route('Marketing.lead.index') }}"><i class="las la-arrow-left"></i>
+                                <li><a href="{{ route('Office.lead.index') }}"><i class="las la-arrow-left"></i>
                                         Leads</a></li>
                                 <li>{{ $data->company_name }}</li>
                             </ul>
@@ -88,8 +88,22 @@
                 <div class="card contact-sidebar">
                     <h5>Lead Information</h5>
                     <ul class="other-info">
-                        <li><span class="other-title">Date
-                                Created</span><span>{{ $data->created_at->format('Y-m-d') }}</span></li>
+                        <li>
+                            <span class="other-title">Date
+                                Created</span><span>{{ $data->created_at->format('Y-m-d') }}
+                            </span>
+                        </li>
+                        <li>
+                            <span class="other-title">
+                                Lead Region :
+                            </span>
+                        </li>
+                        <li>
+                            <span class="other-title">
+                                {{ $data->union->union_name }}, {{ $data->upazila->thana_name }}, {{ $data->district->district_name }}
+                            </span>
+                        </li>
+
 
                     </ul>
                     <div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -195,6 +209,7 @@
     </div>
 
 
+    {{-- @includeIf('admin.lead.partial.contact-record-result') --}}
     @includeIf('marketing-stuff.lead.partial.next-contact-date')
     @push('js')
         <script src="{{asset('backend/assets/js/jquery.dataTables.min.js')}}" type="text/javascript"></script>

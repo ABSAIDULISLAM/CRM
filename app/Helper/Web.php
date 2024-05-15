@@ -116,3 +116,57 @@ function convertfloat($originalNumber)
 }
 
 
+// helper for send SMS
+// function sendSms($to, $message, $token) {
+//     $url = "http://api.greenweb.com.bd/api.php?json";
+//     $data = array(
+//         'to' => "$to",
+//         'message' => "$message",
+//         'token' => "$token",
+//     );
+
+//     $ch = curl_init();
+//     curl_setopt($ch, CURLOPT_URL, $url);
+//     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+//     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+//     curl_setopt($ch, CURLOPT_ENCODING, '');
+//     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//     $smsResult = curl_exec($ch);
+
+//     $smsResult = json_decode($smsResult);
+
+//     foreach ($smsResult as $result) {
+//         if ($result->status == "SENT") {
+//             return true;
+//         } else {
+//             return false;
+//         }
+//     }
+// }
+
+// Helper function for sending SMS
+function sendSms($to, $message, $token)
+{
+    $url = "http://api.greenweb.com.bd/api.php?json";
+    $data = [
+        'to' => $to,
+        'message' => $message,
+        'token' => $token,
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_ENCODING, '');
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $smsResult = curl_exec($ch);
+    curl_close($ch);
+
+    $smsResult = json_decode($smsResult);
+
+    // Check if the SMS was sent successfully
+    return isset($smsResult->status) && $smsResult->status == "SENT";
+}

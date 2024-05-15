@@ -7,19 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class AjaxController extends Controller
 {
-    // public function fetchSubCat(Request $request)
-    // {
-    //     $subcate = DB::table('sub-categories')
-    //     ->where('category_id', $request->catId)
-    //     ->get();
 
-    //     if (count($subcate) > 0) {
-    //         return response()->json($subcate);
-    //     }else{
-    //         $error = ['message' => 'No Record Found'];
-    //         return response()->json($error);
-    //     }
-    // }
     public function fetchSubCat(Request $request)
     {
         $subcategories = DB::table('sub_categories')
@@ -27,6 +15,23 @@ class AjaxController extends Controller
             ->get();
 
         return response()->json($subcategories);
+    }
+
+    public function fetchupazila(Request $request)
+    {
+        $fetchupazila = DB::table('thana_list')
+            ->where('district_id', $request->districtId)
+            ->get();
+
+        return response()->json($fetchupazila);
+    }
+    public function fetchUnions(Request $request)
+    {
+        $union = DB::table('union_list')
+            ->where('thana_id', $request->thana_id)
+            ->get();
+
+        return response()->json($union);
     }
 
     public function FetchProductPrice(Request $request)

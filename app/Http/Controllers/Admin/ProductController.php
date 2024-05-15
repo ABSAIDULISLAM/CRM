@@ -17,6 +17,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with(['category', 'subcategory'])->latest()->get();
+
         return view('admin.product.index', compact(['products']));
     }
 
@@ -186,17 +187,18 @@ class ProductController extends Controller
                 });
             })
             ->orWhere('name', 'like', "%$query%")
-            ->orWhere('slug', 'like', "%$query%")
-            ->orWhere('price', 'like', "%$query%")
-            ->orWhere('status', 'like', "%$query%")
-            ->orWhere('created_at', 'like', "%$query%")
+            // ->orWhere('slug', 'like', "%$query%")
+            // ->orWhere('price', 'like', "%$query%")
+            // ->orWhere('status', 'like', "%$query%")
+            // ->orWhere('created_at', 'like', "%$query%")
             ->with(['category', 'subcategory'])
             ->paginate(10);
 
-        $html = view('admin.Product.search', compact('products'))->render();
+        $html = view('admin.product.search', compact('products'))->render();
 
         return response()->json(['html' => $html]);
     }
+
 
 
 }

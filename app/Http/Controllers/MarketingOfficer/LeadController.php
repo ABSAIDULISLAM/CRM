@@ -6,8 +6,11 @@ use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\ContactLead;
+use App\Models\Disctrict;
 use App\Models\Lead;
 use App\Models\Product;
+use App\Models\Union;
+use App\Models\Upazila;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -17,16 +20,18 @@ class LeadController extends Controller
 {
     public function index()
     {
-        $leads = Lead::where('creator', auth()->user()->id)->with(['user', 'contactlead', 'product'])->latest()->get();
+        $leads = Lead::where('creator', auth()->user()->id)->with(['user', 'contactlead', 'product', 'upazila'])->latest()->get();
 
         return view('marketing-stuff.lead.index', compact('leads'));
     }
 
-
     public function create()
     {
         $product = Product::latest()->get();
-        return view('marketing-stuff.lead.create', compact(['product']));
+
+        $district = Disctrict::orderBy('district_name','asc')->get();
+
+        return view('marketing-stuff.lead.create', compact(['product','district']));
     }
 
     public function store(Request $request)
@@ -45,6 +50,9 @@ class LeadController extends Controller
             'status' => ['required'],
             'next_contact_date' => ['nullable', 'date'],
             'note' => ['nullable', 'max:1024'],
+            'district_id' => ['required'],
+            'upazila_id' => ['required'],
+            'union_id' => ['required'],
         ]);
 
         $lead = new Lead();
@@ -56,6 +64,9 @@ class LeadController extends Controller
         $lead->priority = $request->priority;
         $lead->status = $request->status;
         $lead->address = $request->address;
+        $lead->district_id = $request->district_id;
+        $lead->upazila_id = $request->upazila_id;
+        $lead->union_id = $request->union_id;
         $lead->product_id = $request->product_id;
         $lead->creator = auth()->user()->id;
         if ($request->hasFile('image')) {
@@ -113,7 +124,17 @@ class LeadController extends Controller
         $id = Crypt::decrypt($id);
         $lead = Lead::find($id);
 
+        $user = User::create([
+            'name' => $lead->company_name,
+            'email' => $lead->email,
+            'mobile' => $lead->mobile,
+            'role_as' => Status::User,
+            'password' =>Hash::make('password'),
+            'status' => Status::Active,
+        ]);
+
         $client = new Client();
+        $client->user_id = $user->id;
         $client->name = $lead->company_name;
         $client->email = $lead->email;
         $client->mobile = $lead->mobile;
@@ -122,15 +143,6 @@ class LeadController extends Controller
         $client->creator = auth()->user()->id;
         $client->image = $lead->image;
         $client->save();
-
-        User::create([
-            'name' => $lead->company_name,
-            'email' => $lead->email,
-            'mobile' => $lead->mobile,
-            'role_as' => Status::User,
-            'password' =>Hash::make('password'),
-            'status' => Status::Active,
-        ]);
 
         if ($lead->image && file_exists($lead->image)) {
             unlink($lead->image);
@@ -141,16 +153,20 @@ class LeadController extends Controller
         return redirect()->route('Client.index')->with('success', 'Client created successfully.');
     }
 
-
     public function edit($id)
     {
         $product = Product::latest()->get();
-
+        $district = Disctrict::orderBy('district_name','asc')->get();
+        $upazilas = Upazila::orderBy('thana_name','asc')->get();
+        $unions = Union::orderBy('union_name','asc')->get();
         $id = Crypt::decrypt($id);
         $lead = Lead::with('contactlead')->find($id);
         return view('marketing-stuff.lead.edit', compact([
             'lead',
             'product',
+            'district',
+            'upazilas',
+            'unions',
         ]));
     }
 
@@ -167,6 +183,9 @@ class LeadController extends Controller
             'priority' => ['required'],
             'status' => ['required'],
             'product_id' => ['required', 'exists:products,id'],
+            'district_id' => ['required'],
+            'upazila_id' => ['required'],
+            'union_id' => ['required'],
         ]);
 
         $lead = Lead::find($request->id);
@@ -178,6 +197,9 @@ class LeadController extends Controller
         $lead->priority = $request->priority;
         $lead->status = $request->status;
         $lead->address = $request->address;
+        $lead->district_id = $request->district_id;
+        $lead->upazila_id = $request->upazila_id;
+        $lead->union_id = $request->union_id;
         $lead->product_id = $request->product_id;
         if ($request->hasFile('image')) {
             if ($lead->image && file_exists($lead->image)) {
@@ -210,8 +232,9 @@ class LeadController extends Controller
     public function view($id)
     {
         $id = Crypt::decrypt($id);
-        $data = Lead::find($id);
+        $data = Lead::with(['district', 'upazila', 'union'])->find($id);
         $lastInfo = ContactLead::where('lead_id', $id)->latest()->get();
+
         return view('marketing-stuff.lead.view', compact(['data', 'lastInfo']));
     }
 
@@ -236,18 +259,20 @@ class LeadController extends Controller
             $q->whereHas('product', function ($productQuery) use ($query) {
                 $productQuery->where('name', 'like', "%$query%");
             })
+            ->orWhereHas('upazila', function ($upazilaQuery) use ($query) {
+                $upazilaQuery->where('thana_name', 'like', "%$query%");
+            })
                 ->orWhere('company_name', 'like', "%$query%")
                 ->orWhere('name', 'like', "%$query%")
                 ->orWhere('mobile', 'like', "%$query%")
                 ->orWhere('email', 'like', "%$query%")
                 ->orWhere('priority', 'like', "%$query%");
         })
-            ->with(['user', 'contactlead', 'product'])
+            ->with(['user', 'contactlead', 'product','upazila'])
             ->paginate(10);
 
-        $html = view('marketing-stuff.Lead.search', compact('leads'))->render();
+        $html = view('marketing-stuff.lead.search', compact('leads'))->render();
 
         return response()->json(['html' => $html]);
     }
-
 }

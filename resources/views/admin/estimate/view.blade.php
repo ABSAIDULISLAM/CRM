@@ -121,7 +121,7 @@
                                                     <tr>
                                                         <th>Total:</th>
                                                         <td class="text-end text-primary">
-                                                            <h5>{{ $data->grand_total + $data->service_fee}}/-</h5>
+                                                            <h5>{{ $data->grand_total}}/-</h5>
                                                         </td>
                                                     </tr>
                                                 </tbody>

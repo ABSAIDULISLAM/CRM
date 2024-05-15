@@ -10,7 +10,7 @@
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
-                    <h3 class="page-title"> Profile</h3>
+                    <h3 class="page-title"> Invoice History</h3>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{route('Client.index')}}" class="text-success"><i class="fas fa-arrow-left"></i> Back</a>
                         </li>

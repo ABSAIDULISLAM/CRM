@@ -150,7 +150,7 @@
                             <div class="col-lg-12 text-center form-wizard-button">
                                 <button class="button btn-lights reset-btn" type="reset"
                                     data-bs-dismiss="modal">Reset</button>
-                                <button class="btn btn-primary" type="submit">Save Lead</button>
+                                <button class="btn btn-primary" type="submit">Update Client</button>
                             </div>
                         </div>
                     </div>

@@ -77,6 +77,7 @@
                                 <th>contact record</th>
                                 <th>Product</th>
                                 <th>Lead Status</th>
+                                <th>Lead Region</th>
                                 <th>Created Date</th>
                                 <th>Lead Owner</th>
                             </tr>
@@ -158,6 +159,7 @@
                                         {{ $item->status }}
                                     </a>
                                 </td>
+                                <td> {{$item->upazila->thana_name}}</td>
                                 <td> {{$item->created_at->format('Y-m-d')}}</td>
                                 <td> {{$item->user->name}}</td>
 
@@ -202,6 +204,7 @@
                 url: "{{ route('Lead.search') }}",
                 method: 'get',
                 data: {
+                    _token: '{{ csrf_token() }}',
                     query: query
                 },
                 success: function(response){

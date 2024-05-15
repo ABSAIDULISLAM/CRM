@@ -16,6 +16,7 @@
                 <th>contact record</th>
                 <th>Product</th>
                 <th>Lead Status</th>
+                <th>Lead Region</th>
                 <th>Created Date</th>
                 <th>Lead Owner</th>
             </tr>
@@ -30,15 +31,15 @@
                             aria-expanded="false"><i class="material-icons">more_vert</i></a>
                         <div class="dropdown-menu dropdown-menu-right">
                             @if ($item->status == 'active')
-                            <a class="dropdown-item" href="{{route('Lead.convert.client',['id' => Crypt::encrypt($item->id)]) }}"  onclick="return confirm('Aye you sure to Convert This Lead Into CLient ??')"><i class="fas fa-exchange-alt m-r-5"></i>
+                            <a class="dropdown-item" href="{{route('Marketing.lead.convert.client',['id' => Crypt::encrypt($item->id)]) }}"  onclick="return confirm('Aye you sure to Convert This Lead Into CLient ??')"><i class="fas fa-exchange-alt m-r-5"></i>
                                 Convret To Client</a>
                             @endif
                             <a class="dropdown-item" href="#" onclick="contactModal({{$item->id}})"><i
                                     class="fa-regular fa-add m-r-5"></i>
                                 Contact Record</a>
-                            <a class="dropdown-item" href="{{route('Lead.edit',['id' => Crypt::encrypt($item->id)]) }}"><i class="fa-solid fa-pencil m-r-5"></i>
+                            <a class="dropdown-item" href="{{route('Marketing.lead.edit',['id' => Crypt::encrypt($item->id)]) }}"><i class="fa-solid fa-pencil m-r-5"></i>
                                 Edit</a>
-                            <a class="dropdown-item" href="{{route('Lead.view',['id' => Crypt::encrypt($item->id)]) }}"><i class="fa-regular fa-eye m-r-5"></i>
+                            <a class="dropdown-item" href="{{route('Marketing.lead.view',['id' => Crypt::encrypt($item->id)]) }}"><i class="fa-regular fa-eye m-r-5"></i>
                                 Preview</a>
                             <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                 data-bs-target="#delete_company"><i
@@ -50,10 +51,10 @@
                 <td>{{$item->company_name}}</td>
                 <td>
                     <h2 class="table-avatar d-flex align-items-center">
-                        <a href="{{route('Lead.view',['id' => Crypt::encrypt($item->id)]) }}" class="company-img">
+                        <a href="{{route('Marketing.lead.view',['id' => Crypt::encrypt($item->id)]) }}" class="company-img">
                             <img src="{{ asset($item->image ?: 'backend/assets/img/icons/company-icon-10.svg') }}" alt="Company Image">
                         </a>
-                        <a class="text-success text-bold" href="{{route('Lead.view',['id' => Crypt::encrypt($item->id)]) }}" class="profile-split">{{$item->name}}</a>
+                        <a class="text-success text-bold" href="{{route('Office.lead.view',['id' => Crypt::encrypt($item->id)]) }}" class="profile-split">{{$item->name}}</a>
                     </h2>
                 </td>
                 <td> {{$item->mobile}}</td>
@@ -92,18 +93,19 @@
                 </td>
                 <td> {{$item->product->name ?? 'Null'}}</td>
                 <td>
-                    <a href="{{route('Lead.status.update',['id' => Crypt::encrypt($item->id)])}}" onclick="return confirm('Aye you sure to change status ??')" class="text-white btn btn-sm badge-{{ $item->status == 'active' ? 'success' : 'danger' }}">
+                    <a href="{{route('Marketing.lead.status.update',['id' => Crypt::encrypt($item->id)])}}" onclick="return confirm('Aye you sure to change status ??')" class="text-white btn btn-sm badge-{{ $item->status == 'active' ? 'success' : 'danger' }}">
                         {{ $item->status }}
                     </a>
                 </td>
+                <td> {{$item->upazila->thana_name}}</td>
                 <td> {{$item->created_at->format('Y-m-d')}}</td>
                 <td> {{$item->user->name}}</td>
 
             </tr>
-            @includeIf('admin.lead.partial.delete')
-            @includeIf('admin.lead.partial.contact-record-result')
+            @includeIf('marketing-stuff.lead.partial.delete')
+            @includeIf('marketing-stuff.lead.partial.contact-record-result')
             @empty
-            <tr><td colspan="12" class="text-center">No Data Found</td></tr>
+            <tr><td colspan="14" class="text-center">No Data Found</td></tr>
             @endforelse
         </tbody>
     </table>

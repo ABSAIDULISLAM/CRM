@@ -141,6 +141,7 @@
                 url: "{{ route('Lead.search') }}",
                 method: 'get',
                 data: {
+                    _token: '{{ csrf_token() }}',
                     query: query
                 },
                 success: function(response){

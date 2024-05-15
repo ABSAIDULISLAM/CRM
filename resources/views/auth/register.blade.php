@@ -11,22 +11,25 @@
     <meta name="author" content="Dreamstechnologies - Bootstrap Admin Template">
     <title>Register - CRM</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('backend/assets/img/favicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('backend/logo.jpeg')}}">
 
     <link rel="stylesheet" href="{{ asset('backend/assets/css/bootstrap.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('backend/assets/css/style.css') }}">
 </head>
 
-<body class="account-page">
+<body class="account-page" id="bg" style="background-image: url('{{ asset('backend/login-bg.jpeg') }}'); background-repeat: no-repeat; background-size: cover;">
 
     <div class="main-wrapper">
         <div class="account-content">
             <div class="container">
 
-                <div class="account-logo">
-                    <a href="{{ route('index') }}"><img src="{{ asset('backend/assets/img/logo2.png') }}"
-                            alt="Dreamguy's Technologies"></a>
+                <div class="accoun-logo text-center mb-3">
+                    <a href="{{route('index')}}" class="text-center">
+                        <div class="logo-container" style="box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.938);">
+                            <img src="{{ asset('backend/logo.png') }}" class="text-center" height="250px" width="300px" alt="CRM-TIZARA">
+                        </div>
+                    </a>
                 </div>
 
                 <div class="account-box">

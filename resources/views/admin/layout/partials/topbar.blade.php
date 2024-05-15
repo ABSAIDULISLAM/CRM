@@ -1,15 +1,50 @@
 <div class="header">
 
     <div class="header-left">
-        <a href="{{route('Admin.dashboard')}}" class="logo">
-            <img src="{{asset('backend/assets/img/logo.svg')}}" alt="Logo">
-        </a>
-        <a href="admin-dashboard.html" class="logo collapse-logo">
-            <img src="{{asset('backend/assets/img/collapse-logo.svg')}}" alt="Logo">
-        </a>
-        <a href="admin-dashboard.html" class="logo2">
-            <img src="{{asset('backend/assets/img/logo2.png')}}" width="40" height="40" alt="Logo">
-        </a>
+        @if (auth()->user()->role_as=='admin')
+            <a href="{{route('Admin.dashboard')}}" class="logo">
+                <div class="logo-container" style="box-shadow: 0px 0px px rgba(255, 255, 255, 0.938);">
+                    <img src="{{asset('backend/logo.png')}}" alt="Logo"  width="180" height="40" alt="Logo">
+                </div>
+            </a>
+            <a href="{{route('Admin.dashboard')}}" class="logo collapse-logo">
+                <img src="{{asset('backend/logo.png')}}" alt="Logo">
+            </a>
+        @elseif (auth()->user()->role_as=='office_staff')
+            <a href="{{route('Office.dashboard')}}" class="logo">
+                <div class="logo-container" style="box-shadow: 0px 0px px rgba(255, 255, 255, 0.938);">
+                    <img src="{{asset('backend/logo.png')}}" alt="Logo"  width="180" height="40" alt="Logo">
+                </div>
+            </a>
+            <a href="{{route('Office.dashboard')}}" class="logo collapse-logo">
+                <img src="{{asset('backend/logo.png')}}" alt="Logo">
+            </a>
+        @elseif (auth()->user()->role_as=='marketing_staff')
+            <a href="{{route('Marketing.dashboard')}}" class="logo">
+                <div class="logo-container" style="box-shadow: 0px 0px px rgba(255, 255, 255, 0.938);">
+                    <img src="{{asset('backend/logo.png')}}" alt="Logo"  width="180" height="40" alt="Logo">
+                </div>
+            </a>
+            <a href="{{route('Marketing.dashboard')}}" class="logo collapse-logo">
+                <img src="{{asset('backend/logo.png')}}" alt="Logo">
+            </a>
+        @else
+            <a href="{{route('User.dashboard')}}" class="logo">
+                <div class="logo-container" style="box-shadow: 0px 0px px rgba(255, 255, 255, 0.938);">
+                    <img src="{{asset('backend/logo.png')}}" alt="Logo"  width="180" height="40" alt="Logo">
+                </div>
+            </a>
+            <a href="{{route('User.dashboard')}}" class="logo collapse-logo">
+                <img src="{{asset('backend/logo.png')}}" alt="Logo">
+            </a>
+        @endif
+
+
+
+
+        {{-- <a href="admin-dashboard.html" class="logo2">
+            <img src="{{asset('backend/logo.png')}}" width="40" height="40" alt="Logo">
+        </a> --}}
     </div>
 
     <a id="toggle_btn" href="javascript:void(0);">
@@ -21,14 +56,14 @@
     </a>
 
     <div class="page-title-box">
-        <h3>Dreams Technologies</h3>
+        <h3>Tizara Business Society</h3>
     </div>
 
     <a id="mobile_btn" class="mobile_btn" href="#sidebar"><i class="fa-solid fa-bars"></i></a>
 
     <ul class="nav user-menu">
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <div class="top-nav-search">
                 <a href="javascript:void(0);" class="responsive-search">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -38,7 +73,7 @@
                     <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
             </div>
-        </li>
+        </li> --}}
 
 
         <li class="nav-item dropdown has-arrow flag-nav">

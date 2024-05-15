@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'marketing-Dashboard')
+@section('title', 'Dashboard')
 
 
 

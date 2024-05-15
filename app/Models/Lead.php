@@ -16,6 +16,18 @@ class Lead extends Model
     {
         return $this->belongsTo(User::class, 'creator' , 'id');
     }
+    public function district()
+    {
+        return $this->belongsTo(Disctrict::class, 'district_id' , 'district_id');
+    }
+    public function upazila()
+    {
+        return $this->belongsTo(Upazila::class, 'upazila_id' , 'thana_id');
+    }
+    public function union()
+    {
+        return $this->belongsTo(Union::class, 'union_id' , 'union_id');
+    }
 
     public function contactlead()
     {

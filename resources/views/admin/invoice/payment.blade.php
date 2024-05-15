@@ -28,7 +28,7 @@
 
         </div>
     </div>
-
+    @includeIf('errors.error')
     <div class="row">
         <div class="col-sm-12">
             <form method="POST" action="{{ route('Invoice.payment-store') }}" enctype="multipart/form-data">
@@ -42,6 +42,7 @@
                             </label>
                             <div class="user-icon">
                                 <input type="hidden" name="id" value="{{$data->id}}">
+                                <input type="hidden" name="user_id" value="{{$userid}}">
                                 <input type="text" name="inv_id" id="inv_id" placeholder="Lead Owner Id"
                                     value="{{$data->inv_id}}" readonly
                                     class="form-control @error('inv_id') is-invalid border border-danger @enderror"
@@ -95,7 +96,7 @@
                                 <h5>Payable Amount<span class="text-danger"></span></h5>
                             </label>
                             <div class="user-icon">
-                                <input type="number" name="payable_amount" id="payable_amount" placeholder="Enter Here Your Paid Amount"
+                                <input type="number" readonly name="payable_amount" id="payable_amount" placeholder="Enter Here Your Paid Amount"
                                     class="form-control @error('payable_amount') is-invalid border border-danger @enderror"
                                      value="{{$payable}}">
                                 @if ($errors->has('payable_amount'))

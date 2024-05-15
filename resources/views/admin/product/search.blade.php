@@ -24,8 +24,8 @@
                         <a href="{{route('Product.view',Crypt::encrypt($item->id)) }}" class="profile-split">{{$item->name}}</a>
                     </h2>
                 </td>
-                <td> {{$item->category->name}}</td>
-                <td> {{$item->subcategory->name}}</td>
+                <td> {{optional($item->category->name)}}</td>
+                <td> {{optional($item->subcategory->name)}}</td>
                 <td> {{$item->price}}</td>
                 <td> {{$item->slug}}</td>
                 <td>
@@ -69,7 +69,7 @@
                       </div>
                 </div>
             @empty
-            <tr><td colspan="5" class="text-center">No Data Found</td></tr>
+            <tr><td colspan="8" class="text-center">No Data Found</td></tr>
             @endforelse
         </tbody>
     </table>

@@ -17,13 +17,8 @@
 
             <ul class="sidebar-vertical">
 
-                    <li class="submenu">
-                        <a href="#"><i class="la la-dashcube"></i> <span> Dashboard</span> <span
-                                class="menu-arrow"></span></a>
-                        <ul>
-                            <li><a href="{{route('Admin.dashboard')}}" class="{{ Request::is('admin/dashboard') ? 'active' : ''}}">Admin Dashboard</a>
-                            </li>
-                        </ul>
+                    <li>
+                        <a href="{{route('Admin.dashboard')}}"  class="{{ Request::is('admin/dashboard') ? 'text-primary' : ''}}"><i class="la la-chart-area"></i> <span> Dashboard </span></a>
                     </li>
                     <li class="submenu " >
                         <a href="#"><i class="la la-cube"></i> <span>Product</span> <span class="menu-arrow"></span></a>
@@ -40,20 +35,20 @@
                         <ul>
                             <li><a href="{{route('Estimate.index')}}" class="{{ Request::is('estimate/index') ? 'active' : ''}}"> Estimate</a></li>
                             <li><a href="{{route('Invoice.index')}}" class="{{ Request::is('invoice/index') ? 'active' : ''}}">Invoices</a></li>
-                            <li><a href="{{route('Invoice.renewal.list')}}" class="{{ Request::is('invoice/renewal-list') ? 'active' : ''}}">Renewal List</a></li>
+                            <li><a href="{{route('Service.renewal.list')}}" class="{{ Request::is('invoice/renewal-list') ? 'active' : ''}}">Renewal List</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="{{route('Payment.index')}}" class="{{ Request::is('payment*') ? 'text-primary' : ''}}"><i class="la la-user-shield"></i> <span> Payments
                             </span></a>
                     </li>
-                    <li class="submenu">
+                    {{-- <li class="submenu">
                         <a href="#"><i class="la la-money-bill-wave"></i> <span> Services </span> <span
                                 class="menu-arrow"></span></a>
                         <ul>
                             <li><a href="{{route('Service.index')}}" class="{{ Request::is('service*') ? 'active' : ''}}"> Reneue Service</a></li>
                         </ul>
-                    </li>
+                    </li> --}}
                     <li>
                         <a href="{{route('Lead.index')}}"  class="{{ Request::is('lead/index') ? 'text-primary' : ''}}"><i class="la la-chart-area"></i> <span> Leads </span></a>
                     </li>

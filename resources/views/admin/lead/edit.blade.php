@@ -1,6 +1,8 @@
 @extends('admin.layout.app')
 @section('title', 'edit-lead')
-
+@push('css')
+<link rel="stylesheet" href="{{ asset('backend/assets/plugins/select2/css/select2.min.css') }}">
+@endpush
 @section('content')
 
     <div class="crms-title row bg-white">
@@ -155,64 +157,79 @@
                                 </div>
                                 <hr>
 
+                                <div class="col-md-12 my-2">
+                                    <div class="card-header p-2" style="background-color: rgb(241, 218, 218)"><h5>Lead Regional Area</h5></div>
+                                </div>
+                                <div class="col-md-4 my-2">
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="district_id">
+                                            <h5>District<span class="text-danger">*</span></h5>
+                                        </label>
+                                        <div class="user-icon">
+                                            <select name="district_id" id="district_id" class="form-select select2 @error('district_id') is-invalid border border-danger @enderror" required>
+                                                <option disabled>Select District</option>
+                                                @foreach ($district as $item)
+                                                    <option value="{{ $item->district_id }}" {{ $lead->district_id == $item->district_id ? 'selected' : '' }}>{{ $item->district_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('district_id')
+                                                <span class="error text-danger ms-5">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 my-2">
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="upazila_id">
+                                            <h5>Upazila<span class="text-danger">*</span></h5>
+                                        </label>
+                                        <div class="user-icon">
+                                            <select name="upazila_id" id="upazila_id" class="form-select @error('upazila_id') is-invalid border border-danger @enderror" required>
+                                                <option disabled>Select Upazila</option>
+                                                @foreach ($upazilas as $upazila)
+                                                    <option value="{{ $upazila->thana_id }}" {{ $lead->upazila_id == $upazila->thana_id ? 'selected' : '' }}>{{ $upazila->thana_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div id="loadingSpinnerUpazila" style="display: none;">
+                                                <i class="fas fa-spinner fa-spin"></i>
+                                            </div>
+                                            @error('upazila_id')
+                                                <span class="error text-danger ms-5">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 my-2">
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="union_id">
+                                            <h5>Union<span class="text-danger">*</span></h5>
+                                        </label>
+                                        <div class="user-icon">
+                                            <select name="union_id" id="union_id" class="form-select @error('union_id') is-invalid border border-danger @enderror" required>
+                                                <option disabled>Select Union</option>
+                                                @foreach ($unions as $union)
+                                                    <option value="{{ $union->union_id }}" {{ $lead->union_id == $union->union_id ? 'selected' : '' }}>{{ $union->union_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div id="loadingSpinner" style="display: none;">
+                                                <i class="fas fa-spinner fa-spin"></i>
+                                            </div>
+                                            @error('union_id')
+                                                <span class="error text-danger ms-5">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 <div class="col-md-12">
                                     <div class="card-header p-2" style="background-color: rgb(241, 218, 218)">
                                         <h5>Product Details</h5>
                                     </div>
                                 </div>
 
-                                {{-- <div class="col-md-4 my-2">
-                                    <div class="input-block mb-3">
-                                        <label class="col-form-label">
-                                            <h5>Product Category<span class="text-danger">*</span></h5>
-                                        </label>
-                                        <div class="user-icon">
-                                            <select name="category_id" id="catId"
-                                                class="form-control @error('category_id') is-invalid border border-danger @enderror"
-                                                required>
-                                                <option disabled selected>Select Category</option>
-                                                @forelse ($category as $item)
-                                                    <option value="{{ $item->id }}" {{ $item->id == $lead->category->id ? 'selected' : '' }}>
-                                                        {{ $item->name }}
-                                                    </option>
-                                                @empty
-                                                @endforelse
-                                            </select>
-                                            @if ($errors->has('category_id'))
-                                                <span class="error text-danger ms-5">{{ $errors->first('category_id') }}</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-md-4 my-2">
-                                    <div class="input-block mb-3">
-                                        <label class="col-form-label">
-                                            <h5>Sub Category<span class="text-danger">*</span></h5>
-                                        </label>
-                                        <div class="user-icon">
-                                            <select name="sub_category_id" id="subCategoryId"
-                                                class="form-control @error('sub_category_id') is-invalid border border-danger @enderror"
-                                                required >
-                                                <option disabled selected>Select Sub Category</option>
-                                                @forelse ($subcategory as $item)
-                                                    <option value="{{ $item->id }}" {{ $item->id == $lead->subcategory->id ? 'selected' : '' }}>
-                                                        {{ $item->name }}
-                                                    </option>
-                                                @empty
-                                                @endforelse
-                                            </select>
-                                            <div id="loadingSpinner" style="display: none;">
-                                                <i class="fas fa-spinner fa-spin"></i>
-                                            </div>
-                                            @if ($errors->has('sub_category_id'))
-                                                <span
-                                                    class="error text-danger ms-5">{{ $errors->first('sub_category_id') }}</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div> --}}
                                 <div class="col-md-12 my-2">
                                     <div class="input-block mb-3">
                                         <label class="col-form-label" for="address">
@@ -242,21 +259,7 @@
                                 @php
                                     $date = date('Y-m-d');
                                 @endphp
-                                {{-- <div class="col-md-4 my-2 ">
-                                        <div class="input-block mb-3">
-                                            <label class="col-form-label" for="next_contact_date">
-                                                <h5>Next Contact Date<span class="text-danger"></span></h5>
-                                            </label>
-                                            <div class="user-icon">
-                                                <input type="date" name="next_contact_date" id="next_contact_date" value="{{ $lead->contactlead->next_contact_date }}"
-                                                    class="form-control @error('next_contact_date') is-invalid border border-danger @enderror">
-                                                @if ($errors->has('next_contact_date'))
-                                                    <span
-                                                        class="error text-danger ms-5">{{ $errors->first('next_contact_date') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div> --}}
+
                                 <div class="col-md-4">
                                     <div class="input-block mb-3">
                                         <h5 class="mb-3">Priority <span class="text-danger">*</span></h5>
@@ -299,21 +302,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                {{-- <div class="col-md-12 my-2">
-                                        <div class="input-block mb-3">
-                                            <label class="col-form-label" for="note">
-                                                <h5>Note <span class="text-danger">*</span></h5>
-                                            </label>
-                                            <div class="user-icon">
-                                                <textarea name="note" id="" placeholder="Write here Company Full address"
-                                                    class="form-control @error('note') is-invalid border border-danger @enderror" cols="5"
-                                                    rows="3">{{ $lead->note }}</textarea>
-                                                @if ($errors->has('note'))
-                                                    <span class="error text-danger ms-5">{{ $errors->first('note') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div> --}}
                                 <div class="col-lg-12 my-4 text-center form-wizard-button">
                                     <button class="button btn-lights reset-btn" type="reset"
                                         data-bs-dismiss="modal">Reset</button>
@@ -328,5 +316,68 @@
     </div>
 
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // $(document).ready(function() {
+        //     $('button[type="submit"]').prop('disabled', true);
+        //     $('.form-control').on('input', function () {
+        //         var form = $(this).closest('form');
+        //         var requiredFields = form.find('.form-control[required]');
+        //         var invalidFields = requiredFields.filter(function() {
+        //             return !$(this).val();
+        //         });
+        //         $('button[type="submit"]').prop('disabled', invalidFields.length > 0);
+        //     });
+        // });
+        // ======
+
+        $('#district_id').on('change', function() {
+            let districtId = $('#district_id').val();
+            if (districtId) {
+                $('#loadingSpinnerUpazila').show();
+                $.ajax({
+                    url: '{{ route('fetch.upazilas') }}?districtId=' + districtId,
+                    type: 'GET',
+                    success: function(res) {
+                        $('#loadingSpinnerUpazila').hide();
+                        $('#upazila_id').empty();
+                        $('#upazila_id').append('<option disabled selected>Select Upazila</option>');
+                        $.each(res, function(key, value) {
+                            $('#upazila_id').append('<option value="' + value.thana_id + '">' + value.thana_name + '</option>');
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+        $('#upazila_id').on('change', function() {
+            let thana_id = $('#upazila_id').val();
+            if (thana_id) {
+                $('#loadingSpinner').show();
+                $.ajax({
+                    url: '{{ route('fetch.unions') }}?thana_id=' + thana_id,
+                    type: 'GET',
+                    success: function(res) {
+                        $('#loadingSpinner').hide();
+                        $('#union_id').empty();
+                        $('#union_id').append('<option disabled selected>Select Union</option>');
+                        $.each(res, function(key, value) {
+                            $('#union_id').append('<option value="' + value.union_id + '">' + value.union_name + '</option>');
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+    </script>
 
 @endsection
+
+@push('js')
+<script src="{{ asset('backend/assets/plugins/select2/js/select2.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('backend/assets/plugins/select2/js/custom-select.js') }}" type="text/javascript"></script>
+@endpush

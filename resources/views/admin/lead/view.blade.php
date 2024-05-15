@@ -88,8 +88,22 @@
                 <div class="card contact-sidebar">
                     <h5>Lead Information</h5>
                     <ul class="other-info">
-                        <li><span class="other-title">Date
-                                Created</span><span>{{ $data->created_at->format('Y-m-d') }}</span></li>
+                        <li>
+                            <span class="other-title">Date
+                                Created</span><span>{{ $data->created_at->format('Y-m-d') }}
+                            </span>
+                        </li>
+                        <li>
+                            <span class="other-title">
+                                Lead Region :
+                            </span>
+                        </li>
+                        <li>
+                            <span class="other-title">
+                                {{ $data->union->union_name }}, {{ $data->upazila->thana_name }}, {{ $data->district->district_name }}
+                            </span>
+                        </li>
+
 
                     </ul>
                     <div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -194,124 +208,6 @@
         </div>
     </div>
 
-
-    {{-- <div class="modal custom-modal fade modal-padding" id="add_notes" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header header-border align-items-center justify-content-between p-0">
-                    <h5 class="modal-title">Add Note</h5>
-                    <button type="button" class="btn-close position-static" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body p-0">
-                    <form action="https://smarthr.dreamstechnologies.com/html/template/leads-details.html">
-                        <div class="input-block mb-3">
-                            <label class="col-form-label">Title <span class="text-danger">
-                                    *</span></label>
-                            <input class="form-control" type="text">
-                        </div>
-                        <div class="input-block mb-3">
-                            <label class="col-form-label">Note <span class="text-danger">
-                                    *</span></label>
-                            <textarea class="form-control" rows="4" placeholder="Add text"></textarea>
-                        </div>
-                        <div class="input-block mb-3">
-                            <label class="col-form-label">Attachment <span class="text-danger">
-                                    *</span></label>
-                            <div class="drag-upload">
-                                <input type="file">
-                                <div class="img-upload">
-                                    <i class="las la-file-import"></i>
-                                    <p>Drag & Drop your files</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="input-block mb-3">
-                            <label class="col-form-label">Uploaded Files</label>
-                            <div class="upload-file">
-                                <h6>Projectneonals teyys.xls</h6>
-                                <p>4.25 MB</p>
-                                <div class="progress">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 25%"
-                                        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <p>45%</p>
-                            </div>
-                            <div class="upload-file upload-list">
-                                <div>
-                                    <h6>Projectneonals teyys.xls</h6>
-                                    <p>4.25 MB</p>
-                                </div>
-                                <a href="javascript:void(0);" class="text-danger"><i class="las la-trash"></i></a>
-                            </div>
-                        </div>
-                        <div class="col-lg-12 text-end form-wizard-button">
-                            <button class="button btn-lights reset-btn" type="reset">Reset</button>
-                            <button class="btn btn-primary" type="submit">Save Notes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
-
-    {{-- <div class="modal custom-modal fade modal-padding" id="create_call" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header header-border align-items-center justify-content-between p-0">
-                    <h5 class="modal-title">Create Call Log</h5>
-                    <button type="button" class="btn-close position-static" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body p-0">
-                    <form action="https://smarthr.dreamstechnologies.com/html/template/leads-details.html">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="input-block mb-3">
-                                    <label class="col-form-label">Status <span class="text-danger"> *</span></label>
-                                    <select class="select">
-                                        <option>Busy</option>
-                                        <option>Unavailable</option>
-                                        <option>No Answer</option>
-                                        <option>Wrong Number</option>
-                                        <option>Left Voice Message</option>
-                                        <option>Moving Forward</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="input-block mb-3">
-                                    <label class="col-form-label">Followup Date <span class="text-danger">
-                                            *</span></label>
-                                    <input class="form-control datetimepicker" type="text">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="input-block mb-3">
-                            <label class="col-form-label">Note <span class="text-danger">
-                                    *</span></label>
-                            <textarea class="form-control" rows="4" placeholder="Add text"></textarea>
-                        </div>
-                        <div class="input-block mb-3">
-                            <label class="custom_check check-box mb-0">
-                                <input type="checkbox">
-                                <span class="checkmark"></span> Create a Follow up task
-                            </label>
-                        </div>
-                        <div class="col-lg-12 text-end form-wizard-button">
-                            <button class="button btn-lights reset-btn" type="reset">Reset</button>
-                            <button class="btn btn-primary" type="submit">Save Call</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
-    {{-- @includeIf('admin.lead.partial.contact-record-result') --}}
     @includeIf('admin.lead.partial.next-contact-date')
     @push('js')
         <script src="{{asset('backend/assets/js/jquery.dataTables.min.js')}}" type="text/javascript"></script>

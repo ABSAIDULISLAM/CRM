@@ -46,7 +46,7 @@ class InvoiceController extends Controller
             'grand_total' => ['required', 'numeric'],
             'other_info' => ['nullable', 'max:1024'],
             'renewType' => ['required'],
-            'service_fee' => ['required','numeric','min:0','max:999999.99'],
+            'service_fee' => ['required', 'numeric', 'min:0', 'max:999999.99'],
             'product_id*' => ['required', 'exists:products,id'],
             'desc*' => ['nullable', 'max:256'],
             'price*' => ['required', 'numeric'],
@@ -54,9 +54,15 @@ class InvoiceController extends Controller
             'total*' => ['required'],
         ]);
 
+        $today = Carbon::now();
         $invSummary = new InvoiceSummary();
         $invSummary->client_id = $request->client_id;
         $invSummary->inv_id = $request->inv_id;
+        if ($request->renewType == 'monthly') {
+            $invSummary->expiry_date = $today->addDays(30);
+        } elseif ($request->renewType == 'yearly') {
+            $invSummary->expiry_date = $today->addYear();
+        }
         $invSummary->client_address = $request->client_address;
         $invSummary->billing_address = $request->billing_address;
         $invSummary->subTotal = $request->subTotal;
@@ -121,10 +127,15 @@ class InvoiceController extends Controller
             'qty*' => ['required'],
             'total*' => ['required'],
         ]);
-
+        $today = Carbon::now();
         $invSummary = InvoiceSummary::find($request->id);
         $invSummary->client_id = $request->client_id;
         $invSummary->inv_id = $request->inv_id;
+        if ($request->renewType == 'monthly') {
+            $invSummary->expiry_date = $today->addDays(30);
+        } elseif ($request->renewType == 'yearly') {
+            $invSummary->expiry_date = $today->addYear();
+        }
         $invSummary->client_address = $request->client_address;
         $invSummary->billing_address = $request->billing_address;
         $invSummary->subTotal = $request->subTotal;
@@ -170,7 +181,10 @@ class InvoiceController extends Controller
         $id = Crypt::decrypt($id);
         $data = InvoiceSummary::find($id);
 
-        return view('admin.invoice.payment', compact(['data', 'payable']));
+        $client= Client::find($data->client_id);
+        $userid = $client->user_id;
+
+        return view('admin.invoice.payment', compact(['data', 'payable','userid']));
     }
 
     public function paymentStore(Request $request)
@@ -182,6 +196,7 @@ class InvoiceController extends Controller
             'description' => ['nullable'],
             'date' => ['required', 'date'],
             'paid_amount' => ['required', 'numeric'],
+            'user_id' => ['required', 'exists:users,id'],
         ]);
 
         Ledger::create([
@@ -200,59 +215,57 @@ class InvoiceController extends Controller
         $data->update(['payment_status' => $status]);
 
         Payment::create([
-            'user_id' => $request->id,
+            'user_id' => $request->user_id,
             'inv_id' => $request->inv_id,
             'date' => $request->date,
             'paid_amount' => $request->paid_amount,
             'payment_status' => Status::Unpaid,
         ]);
 
-        return redirect()->route('Invoice.index')->with('success', 'Invoice Payment Collected Successful');
+        $client = Client::findOrFail($data->client_id);
+        $name = $client->name;
+        $mobile = $client->mobile;
+        $message = "Hello $name, Your Paid Amount $request->paid_amount TK is Stored Successfully.
+                Best Regards,
+                <br>
+                Tizara Business Society";
+        $token = "87991921371671024097ac42cd5523ff3df1c17197241b8bae52";
+
+        // Call the sendSms function and store the result
+        $smsResult = sendSms($mobile, $message, $token);
+
+        $smsResults[] = [
+            'mobile' => $mobile,
+            'message' => $message,
+            'status' => $smsResult ? 'Success' : 'Failed',
+        ];
+
+        $dataforPayment = [
+            'id' => $request->id,
+        ];
+
+        return redirect()->route('Invoice.index')->with(['success', 'Invoice Payment Collected Successful', 'dataforPayment' => $dataforPayment]);
     }
 
-    public function renewalList()
-    {
-        $data = InvoiceSummary::where('status', 'invoice')
-            ->where(function ($query) {
-                $query->where(function ($query) {
-                    $query->where('renewType', 'monthly')
-                        ->whereDate('created_at', '<=', Carbon::now()->subDays(23))
-                        ->whereDate('created_at', '>=', Carbon::now()->subDays(30));
-                })
-                ->orWhere(function ($query) {
-                    $query->where('renewType', 'yearly')
-                        ->whereDate('created_at', '<=', Carbon::now()->subMonths(11))
-                        ->whereDate('created_at', '>=', Carbon::now()->subMonths(12));
-                });
-            })
-            // ->whereIn('payment_status', ['unpaid', 'partial'])
-            ->with(['invdetails', 'client', 'creator'])
-            ->latest()
-            ->get();
-
-        return view('admin.invoice.renewal-list', compact('data'));
-    }
 
     public function Search(Request $request)
     {
         $query = $request->input('query');
 
         $data = InvoiceSummary::where('status', 'invoice')
-                    ->where(function ($q) use ($query) {
-                        $q->whereHas('client', function ($clientQuery) use ($query) {
-                            $clientQuery->where('name', 'like', "%$query%");
-                        })
-                        ->orWhere('inv_id', 'like', "%$query%")
-                        ->orWhere('payment_status', 'like', "%$query%")
-                        ->orWhere('payment_status', 'like', "%$query%");
-                    })
-                    ->with(['invdetails', 'client', 'creator'])
-                    ->paginate(10);
+            ->where(function ($q) use ($query) {
+                $q->whereHas('client', function ($clientQuery) use ($query) {
+                    $clientQuery->where('name', 'like', "%$query%");
+                })
+                    ->orWhere('inv_id', 'like', "%$query%")
+                    ->orWhere('payment_status', 'like', "%$query%")
+                    ->orWhere('payment_status', 'like', "%$query%");
+            })
+            ->with(['invdetails', 'client', 'creator'])
+            ->paginate(10);
 
         $html = view('admin.invoice.search', compact('data'))->render();
 
         return response()->json(['html' => $html]);
     }
-
-
 }

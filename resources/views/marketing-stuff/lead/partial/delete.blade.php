@@ -10,7 +10,7 @@
                             <p>Company ”NovaWaveLLC” from your Account</p>
                             <div class="col-lg-12 text-center form-wizard-button">
                                   <a href="#" class="button btn-lights" data-bs-dismiss="modal">Not Now</a>
-                                  <a href="{{route('Lead.delete', [Crypt::encrypt($item->id), 'name'=> 'saidul'])}}" class="btn btn-primary">Okay</a>
+                                  <a href="{{route('Marketing.lead.delete', [Crypt::encrypt($item->id), 'name'=> 'saidul'])}}" class="btn btn-primary">Okay</a>
                             </div>
                       </div>
                 </div>

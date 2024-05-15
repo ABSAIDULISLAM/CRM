@@ -24,33 +24,13 @@
                 </div>
                 <div class="col-auto float-end ms-auto">
                     <div class="btn-group btn-group-sm">
-                        {{-- <button class="btn btn-white">CSV</button>
-                        <button class="btn btn-white">PDF</button> --}}
+
                         <button  onclick="window.print();" class="btn btn-white"><i class="fa-solid fa-print fa-lg"></i>
                             Print</button>
                     </div>
                 </div>
             </div>
         </div>
-        {{-- <div class="card">
-            <div class="card-body">
-                <div class="col-md-6 m-auto">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <select name="" class="form-control" id="">
-                                <option value="">Select Payment Method</option>
-                                <option value="">Cash On</option>
-                                <option value="">Bkash</option>
-                                <option value="">Card</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="" class="btn btn-primary">Pay Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
         <div class="row " id="contentToPrint" >
             <div class="col-md-12">
                 <div class="card">
@@ -69,7 +49,7 @@
                                     <h3 class="text-uppercase">Invoice #INV-{{$data->inv_id}} </h3>
                                     <ul class="list-unstyled">
                                         <li>Print Date: <span>{{ \Carbon\Carbon::now()->format('d-m-y') }}</span></li>
-                                        <li>Due date: <span>{{ \Carbon\Carbon::parse($data->expiry_date)->format('d-m-y') }}</span></li>
+                                        <li>Paid date: <span>{{ \Carbon\Carbon::parse($data->updated_at)->format('d-m-y') }}</span></li>
 
                                         <hr style="color: #cfcfcf;padding:2px; margin:2px">
                                         <h6> Status :   <span class="text-{{ $data->payment_status === 'paid' ? 'success' : ($data->payment_status === 'partial' ? 'warning' : 'danger') }}" style="font-size: 15px;">

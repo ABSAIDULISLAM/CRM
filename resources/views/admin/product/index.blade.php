@@ -129,7 +129,7 @@
 
                             @endif
                             @empty
-                            <tr><td colspan="5" class="text-center">No Data Found</td></tr>
+                            <tr><td colspan="8" class="text-center">No Data Found</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -153,7 +153,8 @@
                     url: "{{ route('Product.search') }}",
                     method: 'get',
                     data: {
-                        query: query
+                        _token: '{{ csrf_token() }}',
+                        query: query,
                     },
                     success: function(response){
                         $('#loadingSpinner').hide();

@@ -313,11 +313,7 @@
         </div>
     @endif
 
-    <script>
-        $(document).ready(function() {
-            $('#myModal').modal('show');
-        });
-    </script>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
@@ -334,7 +330,8 @@
                 url: "{{ route('Estimate.search') }}",
                 method: 'get',
                 data: {
-                    query: query
+                    _token: '{{ csrf_token() }}',
+                    query: query,
                 },
                 success: function(response){
                     $('#loadingSpinner').hide();
@@ -346,6 +343,11 @@
             });
         }
 
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#myModal').modal('show');
     });
 </script>
 

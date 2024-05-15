@@ -32,7 +32,7 @@ class ClientController extends Controller
             'creator' => ['exists:users,id'],
             'name' => ['required', 'string', 'max:255', 'unique:users,mobile'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
-            'mobile' => ['required', 'regex:/\+?(88)?0?1[3-9][0-9]{8}\b/', 'max:15'],
+            'mobile' => ['required', 'regex:/\+?(88)?0?1[3-9][0-9]{8}\b/', 'max:15', 'unique:users,mobile'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'],
             'address' => ['required', 'max:256'],
         ]);
